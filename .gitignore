@@ -1,0 +1,7 @@
+# Ignore C#/dotnet temp files
+**/bin/
+**/obj/
+
+# Ignore VS files
+.vscode/
+
