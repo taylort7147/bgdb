@@ -10,6 +10,6 @@ namespace BggExt.Data
         {
         }
 
-        public DbSet<Models.DownloadUserCollectionJob> UserCollectionJobs { get; set; }  = default!;
+        public DbSet<Models.DownloadLibraryJob> DownloadLibraryJobs { get; set; }  = default!;
     }
 }

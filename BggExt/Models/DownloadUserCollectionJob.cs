@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BggExt.Models
 {
-    public class DownloadUserCollectionJob
+    public class DownloadLibraryJob
     {
         [Required()]
         public string UserId { get; set; }  = default!;

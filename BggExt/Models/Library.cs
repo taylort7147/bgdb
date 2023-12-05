@@ -3,8 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BggExt.Models
 {
-    public class User
+    public class Library
     {
+        [Key]
         public string Id { get; set; }  = default!;
 
         [DataType(DataType.DateTime)]

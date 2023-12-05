@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BggExt.Models
 {
-    public class BoardGameUserData
+    public class BoardGameLibraryData
     {
         public int Id { get; set; }
 
@@ -11,6 +11,6 @@ namespace BggExt.Models
 
         public BoardGame BoardGame { get; set; }  = default!;
 
-        public User User { get; set; }  = default!;
+        public Library Library { get; set; }  = default!;
     }
 }

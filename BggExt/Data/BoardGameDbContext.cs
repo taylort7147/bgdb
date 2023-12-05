@@ -13,7 +13,7 @@ namespace BggExt.Data
 
         public DbSet<Models.BoardGame> BoardGames { get; set; }  = default!;
 
-        public DbSet<Models.User> Users { get; set; }  = default!;
+        public DbSet<Models.Library> Libraries { get; set; }  = default!;
 
         public DbSet<Models.Mechanic> Mechanics { get; set; }  = default!;
 
@@ -23,6 +23,6 @@ namespace BggExt.Data
 
         public DbSet<Models.Image> Images { get; set; }  = default!;
 
-        public DbSet<Models.BoardGameUserData> UserData { get; set; }  = default!;
+        public DbSet<Models.BoardGameLibraryData> LibraryData { get; set; }  = default!;
     }
 }
