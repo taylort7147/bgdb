@@ -1,4 +1,8 @@
 using System.Xml.Linq;
+using System.IO;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace BggExt.Web
 {

@@ -1,15 +1,16 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BggExt.Models
 {
     public class BoardGameUserData
     {
-        [Required()]
-        public BoardGame BoardGame { get; set; } = null!;
-
-        [Required()]
-        public User User { get; set; } = null!;
+        public int Id { get; set; }
 
         public string? Location { get; set; }
+
+        public BoardGame BoardGame { get; set; }  = default!;
+
+        public User User { get; set; }  = default!;
     }
 }

@@ -7,6 +7,6 @@ namespace BggExt.Models
         public int Id { get; set; }
 
         [Required()]
-        public byte[] ImageData { get; set; } = null!;
+        public byte[] ImageData { get; set; }  = default!;
     }
 }

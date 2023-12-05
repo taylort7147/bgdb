@@ -1,4 +1,4 @@
-using System.Diagnostics.CodeAnalysis;
+using System;
 using System.Xml.Linq;
 
 namespace BggExt.XmlApi2
@@ -77,7 +77,8 @@ namespace BggExt.XmlApi2
         {
             if (element != null)
             {
-                if (T.TryParse(element.Value, formatProvider, out T? value))
+                T? value;
+                if (T.TryParse(element.Value, formatProvider, out value))
                 {
                     return value;
                 }
