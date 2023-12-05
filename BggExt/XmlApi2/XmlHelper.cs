@@ -39,7 +39,8 @@ namespace BggExt.XmlApi2
                 var attr = element.Attribute(attrName);
                 if (attr != null)
                 {
-                    if (T.TryParse(attr.Value, formatProvider, out T? value))
+                    T? value = default;
+                    if (T.TryParse(attr.Value, formatProvider, out value))
                     {
                         return value;
                     }
