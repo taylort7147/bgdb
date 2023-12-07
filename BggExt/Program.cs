@@ -19,7 +19,7 @@ builder.Services
     .AddSingleton<Api>()
     .AddHttpClient<Downloader>(c =>
     {
-        // Set BaseURL and stuff here, more efficient that make a new client all the time
+        // Set BaseURL and stuff here, more efficient than making a new client all the time
     })
     .SetHandlerLifetime(TimeSpan.FromMinutes(15))
     ;
@@ -37,9 +37,7 @@ else
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 
 app.UseHttpsRedirection();
@@ -53,21 +51,6 @@ app.MapControllerRoute(
     "{controller}/{action=Index}/{id?}");
 
 app.MapFallbackToFile("index.html");
-
-
-// Ensure SQLite database is created
-if (app.Environment.IsDevelopment())
-{
-    var connectionString = builder.Configuration.GetConnectionString("BoardGameDbContext");
-    EnsurePathExistsForSqlLite(connectionString ?? string.Empty);
-
-    using var scope = app.Services.CreateScope();
-    var dbContext = scope.ServiceProvider.GetRequiredService<BoardGameDbContext>();
-    await dbContext.Database.EnsureCreatedAsync();
-
-    await SeedSomeGames(dbContext);
-}
-
 
 //Could also just add endpoints mapped to the app here rather than using controllers
 var versionSet = app.NewApiVersionSet()
@@ -85,8 +68,20 @@ app.Get("BoardGames/{id:int}",
     .WithApiVersionSet(versionSet)
     .HasApiVersion(1.0);
 
-app.Run();
+// Ensure SQLite database is created
+if (app.Environment.IsDevelopment())
+{
+    var connectionString = builder.Configuration.GetConnectionString("BoardGameDbContext");
+    EnsurePathExistsForSqlLite(connectionString ?? string.Empty);
 
+    using var scope = app.Services.CreateScope();
+    var dbContext = scope.ServiceProvider.GetRequiredService<BoardGameDbContext>();
+    await dbContext.Database.EnsureCreatedAsync();
+
+    await SeedSomeGames(dbContext);
+}
+
+app.Run();
 
 static async Task SeedSomeGames(BoardGameDbContext context)
 {
