@@ -1,17 +1,29 @@
-using System.ComponentModel.DataAnnotations;
 using Asp.Versioning;
 using BggExt;
 using BggExt.Data;
-using BggExt.Models;
+using BggExt.Web;
+using BggExt.XmlApi2;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using BoardGame = BggExt.Models.BoardGame;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews().AddJsonOptions(opts =>
     opts.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles
 );
-builder.Services.AddConfiguredSwaggerUI();
+
+builder.Services
+    .AddConfiguredSwaggerUI()
+    .AddSingleton<Downloader>()
+    .AddSingleton<Api>()
+    .AddHttpClient<Downloader>(c =>
+    {
+        // Set BaseURL and stuff here, more efficient that make a new client all the time
+    })
+    .SetHandlerLifetime(TimeSpan.FromMinutes(15))
+    ;
+
 if (builder.Environment.IsDevelopment())
 {
     builder.Services.AddDbContext<BoardGameDbContext>(options =>

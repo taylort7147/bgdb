@@ -6,23 +6,20 @@ using System.Threading.Tasks;
 
 namespace BggExt.Web;
 
-internal class Downloader
+public class Downloader(HttpClient _httpClient)
 {
-    public static async Task<Stream> Download(string uri)
+    public async Task<Stream> Download(string uri)
     {
-        using (var client = new HttpClient())
-        {
-            return await client.GetStreamAsync(uri);
-        }
+        return await _httpClient.GetStreamAsync(uri);
     }
 
-    public static async Task<string> DownloadString(string uri)
+    public async Task<string> DownloadString(string uri)
     {
         var reader = new StreamReader(await Download(uri));
         return reader.ReadToEnd();
     }
 
-    public static async Task<XElement> DownloadXml(string uri)
+    public async Task<XElement> DownloadXml(string uri)
     {
         return await XElement.LoadAsync(await Download(uri), LoadOptions.None, CancellationToken.None);
     }

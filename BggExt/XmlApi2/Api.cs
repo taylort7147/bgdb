@@ -7,17 +7,17 @@ using System.Xml.Linq;
 
 namespace BggExt.XmlApi2;
 
-public static class Api
+public class Api(Downloader _downloader)
 {
     private static string _ApiHost = "http://boardgamegeek.com/";
 
-    private static async Task<XElement?> _CallApi(string path)
+    private async Task<XElement?> _CallApi(string path)
     {
         var uri = $"{_ApiHost}/{path}";
-        return await Downloader.DownloadXml(uri);
+        return await _downloader.DownloadXml(uri);
     }
 
-    private static ApiResult _ProcessApiCall(XElement? xml, string? rootElement = null)
+    private ApiResult _ProcessApiCall(XElement? xml, string? rootElement = null)
     {
         var result = new ApiResult();
         result.Xml = xml;
@@ -47,7 +47,7 @@ public static class Api
     }
 
 
-    public static async Task<ApiResult> GetBoardGame(int id)
+    public async Task<ApiResult> GetBoardGame(int id)
     {
         var result = await GetBoardGames(new List<int> { id });
 
@@ -73,7 +73,7 @@ public static class Api
         return result;
     }
 
-    public static async Task<ApiResult> GetBoardGames(IList<int> ids)
+    public async Task<ApiResult> GetBoardGames(IList<int> ids)
     {
         var idsString = string.Join(",", ids);
         var result = _ProcessApiCall(await _CallApi($"/xmlapi2/thing?id={idsString}&stats=1&type=boardgame"), "items");
@@ -114,7 +114,7 @@ public static class Api
             result = get_games(ids)
         return result
     */
-    public static async Task<ApiResult> GetCollection(string userId)
+    public async Task<ApiResult> GetCollection(string userId)
     {
         var result = _ProcessApiCall(await _CallApi($"/xmlapi2/collection?username={userId}&subtype=boardgame&brief=1"),
             "items");
