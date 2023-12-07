@@ -1,6 +1,9 @@
+using System.ComponentModel.DataAnnotations;
+using Asp.Versioning;
 using BggExt;
 using BggExt.Data;
 using BggExt.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,9 +20,8 @@ if (builder.Environment.IsDevelopment())
 }
 
 else
-builder.Services.AddDbContext<BoardGameDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ProductionBoardGameDbContext")));
-
+    builder.Services.AddDbContext<BoardGameDbContext>(options =>
+        options.UseSqlServer(builder.Configuration.GetConnectionString("ProductionBoardGameDbContext")));
 
 var app = builder.Build();
 
@@ -53,6 +55,23 @@ if (app.Environment.IsDevelopment())
 
     await SeedSomeGames(dbContext);
 }
+
+
+//Could also just add endpoints mapped to the app here rather than using controllers
+var versionSet = app.NewApiVersionSet()
+    .HasApiVersion(new ApiVersion(1, 0))
+    .HasApiVersion(new ApiVersion(2, 0))
+    .ReportApiVersions()
+    .Build();
+
+app.Get("BoardGames/{id:int}",
+        ([FromServices] BoardGameDbContext db, int id) => { return db.BoardGames.FindAsync(id); })
+    .Produces<BoardGame>()
+    .Produces(404)
+    .Produces(200)
+    .Produces(500)
+    .WithApiVersionSet(versionSet)
+    .HasApiVersion(1.0);
 
 app.Run();
 
