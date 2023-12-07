@@ -8,3 +8,5 @@
 # Ignore application data files
 .db/
 
+
+.idea/.idea.BggExt/.idea/
