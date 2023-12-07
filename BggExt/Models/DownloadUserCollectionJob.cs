@@ -1,16 +1,14 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace BggExt.Models
+namespace BggExt.Models;
+
+public class DownloadLibraryJob
 {
-    public class DownloadLibraryJob
-    {
-        [Required()]
-        public string UserId { get; set; }  = default!;
+    [Required()] public string UserId { get; set; } = default!;
 
-        public bool IsActive { get; set; }
+    public bool IsActive { get; set; }
 
-        public bool WasSuccessful { get; set; }
-        
-        public string? Details { get; set; }
-    }
+    public bool WasSuccessful { get; set; }
+
+    public string? Details { get; set; }
 }

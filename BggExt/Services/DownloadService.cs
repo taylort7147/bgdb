@@ -1,3 +1,1 @@
-namespace BggExt.Services
-{
-}
+namespace BggExt.Services;

@@ -1,9 +1,8 @@
-namespace BggExt.XmlApi2
-{
-    public class CollectionItem
-    {
-        public int Id { get; set; }
+namespace BggExt.XmlApi2;
 
-        public string Name { get; set; } = "";
-    }
+public class CollectionItem
+{
+    public int Id { get; set; }
+
+    public string Name { get; set; } = "";
 }
