@@ -8,6 +8,5 @@ public class DownloadServiceDbContext : DbContext
         : base(options)
     {
     }
-
     public DbSet<Models.DownloadLibraryJob> DownloadLibraryJobs { get; set; } = default!;
 }

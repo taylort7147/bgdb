@@ -6,9 +6,9 @@ public class Link
 {
     public int Id { get; set; }
 
-    public string Type { get; set; } = "";
+    public string Type { get; set; } = default!;
 
-    public string Value { get; set; } = "";
+    public string Value { get; set; } = default!;
 
     public Link()
     {

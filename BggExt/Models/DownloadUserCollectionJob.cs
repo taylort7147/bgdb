@@ -4,7 +4,8 @@ namespace BggExt.Models;
 
 public class DownloadLibraryJob
 {
-    [Required()] public string UserId { get; set; } = default!;
+    [Required()] 
+    public string UserId { get; set; } = default!;
 
     public bool IsActive { get; set; }
 

@@ -17,8 +17,13 @@ public class ApiResult
         get
         {
             if (Errors.Count != 0)
+            {
                 return OperationStatus.Error;
-            else if (!string.IsNullOrEmpty(Message)) return OperationStatus.Pending;
+            }
+            if (!string.IsNullOrEmpty(Message))
+            {
+                return OperationStatus.Pending;
+            }
             return OperationStatus.Success;
         }
     }

@@ -6,5 +6,6 @@ public class Image
 {
     public int Id { get; set; }
 
-    [Required()] public byte[] ImageData { get; set; } = default!;
+    [Required()]
+    public byte[] ImageData { get; set; } = default!;
 }

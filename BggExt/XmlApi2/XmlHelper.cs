@@ -18,7 +18,10 @@ public static class XmlHelper
     {
         ArgumentNullException.ThrowIfNull(element);
         var attr = element.Attribute(attrName);
-        if (attr != null) return attr.Value;
+        if (attr != null)
+        {
+            return attr.Value;
+        }
         return defaultValue;
     }
 
@@ -39,7 +42,10 @@ public static class XmlHelper
             if (attr != null)
             {
                 T? value = default;
-                if (T.TryParse(attr.Value, formatProvider, out value)) return value;
+                if (T.TryParse(attr.Value, formatProvider, out value))
+                {
+                    return value;
+                }
             }
         }
 
@@ -73,7 +79,10 @@ public static class XmlHelper
         if (element != null)
         {
             T? value;
-            if (T.TryParse(element.Value, formatProvider, out value)) return value;
+            if (T.TryParse(element.Value, formatProvider, out value))
+            {
+                return value;
+            }
         }
 
         return defaultValue;

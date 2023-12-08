@@ -94,26 +94,7 @@ public class Api(Downloader _downloader)
 
         return result;
     }
-
-    /*
-    def get_collection(user_id):
-        raw_data = _call_api(f"/xmlapi2/collection?username={user_id}&subtype=boardgame&brief=1")
-        root = ElementTree.fromstring(raw_data)
-        result = ApiResult()
-        if root.tag == "errors":
-            result.status = ApiResult.error
-            result.errors = []
-            for error in root:
-                result.errors.append(error[0].text)
-        elif root.tag == "message":
-            result.status = ApiResult.pending
-            result.message = root.text
-        elif root.tag == "items":
-            items = [CollectionItem.from_xml(x) for x in root]
-            ids = [x.id for x in items]
-            result = get_games(ids)
-        return result
-    */
+    
     public async Task<ApiResult> GetCollection(string userId)
     {
         var result = _ProcessApiCall(await _CallApi($"/xmlapi2/collection?username={userId}&subtype=boardgame&brief=1"),

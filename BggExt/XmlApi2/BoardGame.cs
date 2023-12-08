@@ -71,10 +71,17 @@ public class BoardGame
         {
             var link = new Link(element);
             if (link.Type == "boardgamemechanic")
+            {
                 Mechanics.Add(link);
+            }
             else if (link.Type == "boardgamecategory")
+            {
                 Categories.Add(link);
-            else if (link.Type == "boardgamefamily") Families.Add(link);
+            }
+            else if (link.Type == "boardgamefamily")
+            {
+                Families.Add(link);
+            }
         }
     }
 }
