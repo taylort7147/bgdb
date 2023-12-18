@@ -3,8 +3,10 @@ using BggExt;
 using BggExt.Data;
 using BggExt.Web;
 using BggExt.XmlApi2;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using BoardGame = BggExt.Models.BoardGame;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,10 +32,17 @@ if (builder.Environment.IsDevelopment())
         options.UseSqlite(builder.Configuration.GetConnectionString("BoardGameDbContext") ??
                           throw new InvalidOperationException("Connection string 'BoardGameDbContext' not found.")));
 }
-
 else
+{
     builder.Services.AddDbContext<BoardGameDbContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("ProductionBoardGameDbContext")));
+}
+
+
+builder.Services.AddAuthorization();
+builder.Services.AddIdentityApiEndpoints<IdentityUser>()
+    .AddEntityFrameworkStores<BoardGameDbContext>();
+
 
 var app = builder.Build();
 
@@ -43,6 +52,9 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
+app.MapIdentityApi<IdentityUser>();
 app.UseConfiguredSwaggerUI();
 
 
@@ -51,6 +63,18 @@ app.MapControllerRoute(
     "{controller}/{action=Index}/{id?}");
 
 app.MapFallbackToFile("index.html");
+app.MapPost("/logout", async (SignInManager<IdentityUser> signInManager,
+    [FromBody] object empty) =>
+    {
+        if (empty != null)
+        {
+            await signInManager.SignOutAsync();
+            return Results.Ok();
+        }
+        return Results.Unauthorized();
+    })
+    .WithOpenApi()
+    .RequireAuthorization();
 
 //Could also just add endpoints mapped to the app here rather than using controllers
 var versionSet = app.NewApiVersionSet()
@@ -59,14 +83,6 @@ var versionSet = app.NewApiVersionSet()
     .ReportApiVersions()
     .Build();
 
-app.Get("BoardGames/{id:int}",
-        ([FromServices] BoardGameDbContext db, int id) => { return db.BoardGames.FindAsync(id); })
-    .Produces<BoardGame>()
-    .Produces(404)
-    .Produces(200)
-    .Produces(500)
-    .WithApiVersionSet(versionSet)
-    .HasApiVersion(1.0);
 
 // Ensure SQLite database is created
 if (app.Environment.IsDevelopment())
@@ -78,7 +94,10 @@ if (app.Environment.IsDevelopment())
     var dbContext = scope.ServiceProvider.GetRequiredService<BoardGameDbContext>();
     await dbContext.Database.EnsureCreatedAsync();
 
-    await SeedSomeGames(dbContext);
+    if (dbContext.BoardGames.Count() == 0)
+    {
+        await SeedSomeGames(dbContext);
+    }
 }
 
 app.Run();
