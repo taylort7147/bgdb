@@ -73,8 +73,8 @@ app.MapPost("/logout", async (SignInManager<IdentityUser> signInManager,
         }
         return Results.Unauthorized();
     })
-    .WithOpenApi()
-    .RequireAuthorization();
+    .WithOpenApi();
+    // .RequireAuthorization();
 
 //Could also just add endpoints mapped to the app here rather than using controllers
 var versionSet = app.NewApiVersionSet()
