@@ -3,13 +3,14 @@ import { NavLink, Link } from "react-router-dom";
 import { Row, Col, Form, Button } from "reactstrap";
 import useToken from "../../useToken";
 
-function logoutUser() {
+function logoutUser(accessToken) {
     console.log("logoutUser");
-    fetch("logout", {
+    fetch("account/logout", {
         method: "POST",
-        headers: {
+        headers: new Headers({
+            'Authorization': `Bearer ${accessToken}`,
             "Content-Type": "application/json"
-        },
+        }),
         body: "{}"
     })
         .then(data => data.json())
@@ -17,12 +18,12 @@ function logoutUser() {
 }
 
 export default function Logout() {
-    const { removeToken } = useToken();
+    const { token, removeToken } = useToken();
 
     const handleSubmit = async e => {
         e.preventDefault();
         removeToken();
-        logoutUser();
+        logoutUser(token?.accessToken);
     }
     return (
         <Form inline onSubmit={handleSubmit}>

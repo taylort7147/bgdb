@@ -1,10 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using BggExt.Models;
 
 namespace BggExt.Data;
 
-public class BoardGameDbContext : IdentityDbContext
+public class BoardGameDbContext : IdentityDbContext<ApplicationUser>
 {
     public BoardGameDbContext(DbContextOptions<BoardGameDbContext> options)
         : base(options)

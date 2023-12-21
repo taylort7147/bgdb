@@ -4,7 +4,7 @@ import "./Login.css";
 
 async function loginUser(credentials) {
     console.log("loginUser");
-    return fetch("login", {
+    return fetch("./account/login", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

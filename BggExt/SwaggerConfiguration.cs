@@ -57,6 +57,7 @@ public static class SwaggerConfiguration
                         new List<string>()
                     }
                 });
+                options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
             })
             .AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>()
             .AddApiVersioning(opts =>

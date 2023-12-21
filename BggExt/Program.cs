@@ -1,18 +1,24 @@
 using Asp.Versioning;
 using BggExt;
 using BggExt.Data;
+using BggExt.Models;
 using BggExt.Web;
 using BggExt.XmlApi2;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.DependencyInjection;
 using BoardGame = BggExt.Models.BoardGame;
-
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllersWithViews().AddJsonOptions(opts =>
-    opts.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles
+builder.Services.AddControllers(opts =>
+        opts.ModelMetadataDetailsProviders.Add(new SystemTextJsonValidationMetadataProvider())
+    )
+    .AddJsonOptions(opts =>
+        opts.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles
 );
 
 builder.Services
@@ -38,13 +44,19 @@ else
         options.UseSqlServer(builder.Configuration.GetConnectionString("ProductionBoardGameDbContext")));
 }
 
-
-builder.Services.AddAuthorization();
-builder.Services.AddIdentityApiEndpoints<IdentityUser>()
+builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<BoardGameDbContext>();
 
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<BoardGameDbContext>();
+    db.Database.Migrate();
+}
 
 if (!app.Environment.IsDevelopment())
     app.UseHsts();
@@ -54,27 +66,17 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapIdentityApi<IdentityUser>();
 app.UseConfiguredSwaggerUI();
 
 
 app.MapControllerRoute(
     "default",
     "{controller}/{action=Index}/{id?}");
+// Place Identity routing after controller routing because Swagger is 
+// configured for "first-come-first-serve" strategy for API routes.
+app.MapGroup("/account").MapIdentityApi<ApplicationUser>(); 
 
 app.MapFallbackToFile("index.html");
-app.MapPost("/logout", async (SignInManager<IdentityUser> signInManager,
-    [FromBody] object empty) =>
-    {
-        if (empty != null)
-        {
-            await signInManager.SignOutAsync();
-            return Results.Ok();
-        }
-        return Results.Unauthorized();
-    })
-    .WithOpenApi();
-    // .RequireAuthorization();
 
 //Could also just add endpoints mapped to the app here rather than using controllers
 var versionSet = app.NewApiVersionSet()
@@ -88,19 +90,34 @@ var versionSet = app.NewApiVersionSet()
 if (app.Environment.IsDevelopment())
 {
     var connectionString = builder.Configuration.GetConnectionString("BoardGameDbContext");
-    EnsurePathExistsForSqlLite(connectionString ?? string.Empty);
+    EnsurePathExistsForSqlite(connectionString ?? string.Empty);
 
-    using var scope = app.Services.CreateScope();
-    var dbContext = scope.ServiceProvider.GetRequiredService<BoardGameDbContext>();
-    await dbContext.Database.EnsureCreatedAsync();
-
-    if (dbContext.BoardGames.Count() == 0)
+    using (var scope = app.Services.CreateScope())
     {
-        await SeedSomeGames(dbContext);
+        var dbContext = scope.ServiceProvider.GetRequiredService<BoardGameDbContext>();
+        await dbContext.Database.EnsureCreatedAsync();
+        if (dbContext.BoardGames.Count() == 0)
+        {
+            await SeedSomeGames(dbContext);
+        }
+
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+        await CreateRoleIfNotExists(roleManager, "Administrator");
+        await CreateRoleIfNotExists(roleManager, "LibraryOwner");
+        await CreateRoleIfNotExists(roleManager, "User");
     }
+
 }
 
 app.Run();
+
+static async Task CreateRoleIfNotExists(RoleManager<IdentityRole> roleManager, string role)
+{
+    if (!await roleManager.RoleExistsAsync(role))
+    {
+        await roleManager.CreateAsync(new IdentityRole() { Name = role });
+    }
+}
 
 static async Task SeedSomeGames(BoardGameDbContext context)
 {
@@ -115,7 +132,7 @@ static async Task SeedSomeGames(BoardGameDbContext context)
     await context.SaveChangesAsync();
 }
 
-static void EnsurePathExistsForSqlLite(string connectionString)
+static void EnsurePathExistsForSqlite(string connectionString)
 {
     if (string.IsNullOrEmpty(connectionString)) return;
 
