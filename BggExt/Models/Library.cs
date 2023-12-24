@@ -10,4 +10,8 @@ public class Library
 
     [DataType(DataType.DateTime)]
     public DateTime? LastSynchronized { get; set; }
+
+    public bool IsSynchronizationEnabled { get; set; } = false;
+
+    public ICollection<BoardGameLibraryData> LibraryData { get; set; } = default!;
 }

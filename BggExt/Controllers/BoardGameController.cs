@@ -48,6 +48,7 @@ public class BoardGameController(BoardGameDbContext _context, XmlApi2.Api _api) 
     }
 
     [HttpGet("{id}")]
+    [Authorize]
     public async Task<IActionResult> GetGame(int id)
     {
         var result = await _api.GetBoardGame(id);

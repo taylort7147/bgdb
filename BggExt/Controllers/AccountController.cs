@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
@@ -75,5 +76,19 @@ public class AccountController(BoardGameDbContext _context) : ControllerBase
             return Ok();
         }
         return Unauthorized();
+    }
+
+    
+
+    [HttpGet("library")]
+    [Authorize]
+    public async Task<IActionResult> GetLibrary(UserManager<ApplicationUser> userManager)
+    {
+        var user = await userManager.GetUserAsync(User);
+        if(user == null)
+        {
+            return Unauthorized();
+        }
+        return CreatedAtAction(nameof(GetLibrary), user.Library.LibraryData);
     }
 }
