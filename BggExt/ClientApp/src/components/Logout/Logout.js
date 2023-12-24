@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { NavLink, Link } from "react-router-dom";
 import { Row, Col, Form, Button } from "reactstrap";
-import useToken from "../../useToken";
+import { useToken } from "../../useToken";
 
 function logoutUser(accessToken) {
     console.log("logoutUser");
@@ -26,7 +26,7 @@ export default function Logout() {
         logoutUser(token?.accessToken);
     }
     return (
-        <Form inline onSubmit={handleSubmit}>
+        <Form onSubmit={handleSubmit}>
             <Row>
                 <Col>
                     <Button type="submit">Log out</Button>

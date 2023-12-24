@@ -5,6 +5,7 @@ import {FetchData} from "./components/FetchData";
 import {Home} from "./components/Home";
 import BoardGame from "./components/BoardGame";
 import {BoardGameTable} from "./components/BoardGameTable";
+import UserManagement from "./components/UserManagement/UserManagement";
 
 
 const AppRoutes = [
@@ -31,6 +32,10 @@ const AppRoutes = [
     {
         path: "/board-game-table",
         element: <BoardGameTable/>
+    },
+    {
+        path: "/admin/users",
+        element: <UserManagement/>
     }
 ];
 

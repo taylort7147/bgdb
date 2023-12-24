@@ -3,7 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import AppRoutes from "./AppRoutes";
 import { Layout } from "./components/Layout";
 import Login from "./components/Login/Login";
-import useToken from "./useToken";
+import { useToken } from "./useToken";
 import "./custom.css";
 
 export default function App() {

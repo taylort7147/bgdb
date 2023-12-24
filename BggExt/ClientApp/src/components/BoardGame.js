@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from "prop-types";
-import useToken from "../useToken";
+import { useToken } from "../useToken";
 
 // type BoardGame = {
 //     id: number;
@@ -117,5 +117,5 @@ export default function BoardGame({ boardGameId }) {
 };
 
 BoardGame.propTypes = {
-    boardGameId: PropTypes.func.isRequired
+    boardGameId: PropTypes.number.isRequired
 };
