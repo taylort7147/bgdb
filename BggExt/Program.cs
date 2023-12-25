@@ -2,6 +2,7 @@ using Asp.Versioning;
 using BggExt;
 using BggExt.Data;
 using BggExt.Models;
+using BggExt.Services;
 using BggExt.Web;
 using BggExt.XmlApi2;
 using Microsoft.AspNetCore.Identity;
@@ -13,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using BoardGame = BggExt.Models.BoardGame;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers(opts =>
@@ -26,18 +28,32 @@ builder.Services
     .AddConfiguredSwaggerUI()
     .AddSingleton<Downloader>()
     .AddSingleton<Api>()
+    .AddSingleton<LibrarySynchronizer>()
+    .AddSingleton<SynchronizationSchedulerService>()
+    .AddSingleton<IJobQueue>(ctx =>
+    {
+        var queueCapacity = 100;
+        return new DefaultBackgroundTaskQueue(queueCapacity);
+    })
+    .AddSingleton<ISynchronizationJobQueue, SynchronizationJobQueue>();
+
+builder.Services
+    .AddHostedService<JobQueueProcessorService>()
     .AddHttpClient<Downloader>(c =>
     {
         // Set BaseURL and stuff here, more efficient than making a new client all the time
     })
-    .SetHandlerLifetime(TimeSpan.FromMinutes(15))
-    ;
+    .SetHandlerLifetime(TimeSpan.FromMinutes(15));
 
 if (builder.Environment.IsDevelopment())
 {
     builder.Services.AddDbContext<BoardGameDbContext>(options =>
-        options.UseSqlite(builder.Configuration.GetConnectionString("BoardGameDbContext") ??
-                          throw new InvalidOperationException("Connection string 'BoardGameDbContext' not found.")));
+        {
+            options.UseSqlite(builder.Configuration.GetConnectionString("BoardGameDbContext") ??
+                throw new InvalidOperationException("Connection string 'BoardGameDbContext' not found."));
+            options.EnableSensitiveDataLogging();
+        }
+    );
 }
 else
 {
@@ -74,7 +90,7 @@ app.MapControllerRoute(
     "{controller}/{action=Index}/{id?}");
 // Place Identity routing after controller routing because Swagger is 
 // configured for "first-come-first-serve" strategy for API routes.
-app.MapGroup("/account").MapIdentityApi<ApplicationUser>(); 
+app.MapGroup("/account").MapIdentityApi<ApplicationUser>();
 
 app.MapFallbackToFile("index.html");
 
@@ -96,17 +112,22 @@ if (app.Environment.IsDevelopment())
     {
         var dbContext = scope.ServiceProvider.GetRequiredService<BoardGameDbContext>();
         await dbContext.Database.EnsureCreatedAsync();
-        if (dbContext.BoardGames.Count() == 0)
-        {
-            await SeedSomeGames(dbContext);
-        }
+        // if (dbContext.BoardGames.Count() == 0)
+        // {
+        //     await SeedSomeGames(dbContext);
+        // }
 
         var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
         await CreateRoleIfNotExists(roleManager, "Administrator");
         await CreateRoleIfNotExists(roleManager, "LibraryOwner");
         await CreateRoleIfNotExists(roleManager, "User");
     }
+}
 
+using (var scope = app.Services.CreateScope())
+{
+    var scheduler = scope.ServiceProvider.GetRequiredService<SynchronizationSchedulerService>();
+    await scheduler.StartAsync(app.Lifetime.ApplicationStopped);
 }
 
 app.Run();

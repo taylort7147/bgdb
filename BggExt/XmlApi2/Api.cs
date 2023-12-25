@@ -102,10 +102,7 @@ public class Api(Downloader _downloader)
         if (result.Status == ApiResult.OperationStatus.Success)
         {
             var items = result.Xml!.Elements("item");
-            var ids = new List<int>(
-                from item in items
-                select item.GetAttributeValue<int>("objectid")
-            );
+            var ids = items.Select(i => i.GetAttributeValue<int>("objectid")).Distinct().ToList();
             return await GetBoardGames(ids);
         }
 

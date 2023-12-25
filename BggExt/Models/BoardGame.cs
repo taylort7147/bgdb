@@ -29,15 +29,15 @@ public class BoardGame
 
     public double AverageWeight { get; set; }
 
-    public ICollection<Mechanic>? Mechanics { get; set; }
+    public virtual IList<Mechanic>? Mechanics { get; set; }
 
-    public ICollection<Category>? Categories { get; set; }
+    public virtual IList<Category>? Categories { get; set; }
 
-    public ICollection<Family>? Families { get; set; }
+    public virtual IList<Family>? Families { get; set; }
 
-    public Image? Thumbnail { get; set; }
+    public virtual Image? Thumbnail { get; set; }
 
-    public Image? Image { get; set; }
+    public virtual Image? Image { get; set; }
 
 
     public static BoardGame ExampleBoardGame() =>

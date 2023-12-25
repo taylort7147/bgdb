@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BggExt.Models;
 
@@ -13,5 +14,7 @@ public class Library
 
     public bool IsSynchronizationEnabled { get; set; } = false;
 
-    public ICollection<BoardGameLibraryData> LibraryData { get; set; } = default!;
+    public virtual IList<BoardGameLibraryData> LibraryData { get; set; } = default!;
+
+    public virtual ApplicationUser Owner { get; set; } = default!;
 }

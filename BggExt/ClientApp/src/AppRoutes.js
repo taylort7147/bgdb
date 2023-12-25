@@ -27,7 +27,7 @@ const AppRoutes = [
     },
     {
         path: "/board-game",
-        element: <BoardGame boardGameId={600}/>
+        element: <BoardGame boardGameId={13}/>
     },
     {
         path: "/board-game-table",

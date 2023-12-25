@@ -61,9 +61,16 @@ public class BoardGame
         AverageWeight = xml.XPathSelectElement("statistics/ratings/averageweight")
             .GetAttributeValueOrDefault("value", 0.0);
         AverageWeight = xml.Descendants("averageweight").First().GetAttributeValueOrDefault("value", 0.0);
-        Thumbnail = new Uri(xml.Element("thumbnail").GetElementValue());
-        Image = new Uri(xml.Element("image").GetElementValue());
-
+        var thumbnailString = xml.Element("thumbnail").GetElementValueOrDefault(string.Empty);
+        if (!string.IsNullOrEmpty(thumbnailString))
+        {
+            Thumbnail = new Uri(thumbnailString);
+        }
+        var imageString = xml.Element("image").GetElementValueOrDefault(string.Empty);
+        if (!string.IsNullOrEmpty(imageString))
+        {
+            Image = new Uri(imageString);
+        }
         Mechanics = new List<Link>();
         Categories = new List<Link>();
         Families = new List<Link>();

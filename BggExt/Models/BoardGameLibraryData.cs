@@ -9,7 +9,7 @@ public class BoardGameLibraryData
 
     public string? Location { get; set; }
 
-    public BoardGame BoardGame { get; set; } = default!;
+    public virtual BoardGame BoardGame { get; set; } = default!;
 
-    public Library Library { get; set; } = default!;
+    public virtual Library Library { get; set; } = default!;
 }

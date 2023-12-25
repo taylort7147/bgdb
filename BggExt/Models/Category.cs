@@ -10,5 +10,5 @@ public class Category
     [Required()]
     public string Name { get; set; } = default!;
 
-    public ICollection<BoardGame> BoardGames { get; set; } = default!;
+    public virtual IList<BoardGame> BoardGames { get; set; } = default!;
 }

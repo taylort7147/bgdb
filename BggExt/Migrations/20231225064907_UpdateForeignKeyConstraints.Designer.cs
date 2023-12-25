@@ -3,6 +3,7 @@ using System;
 using BggExt.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BggExt.Migrations
 {
     [DbContext(typeof(BoardGameDbContext))]
-    partial class BoardGameDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231225064907_UpdateForeignKeyConstraints")]
+    partial class UpdateForeignKeyConstraints
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.0");
