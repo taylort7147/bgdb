@@ -5,7 +5,7 @@ import { useToken } from "../../useToken";
 
 function logoutUser(accessToken) {
     console.log("logoutUser");
-    fetch("account/logout", {
+    fetch("api/account/logout", {
         method: "POST",
         headers: new Headers({
             'Authorization': `Bearer ${accessToken}`,

@@ -7,7 +7,7 @@ export default function UserManagement() {
     var accessToken = token?.accessToken;
     const [users, setUsers] = useState([]);
     useEffect(() => {
-        fetch('user', {
+        fetch("api/user", {
             method: "GET",
             headers: new Headers({
                 'Authorization': `Bearer ${accessToken}`,

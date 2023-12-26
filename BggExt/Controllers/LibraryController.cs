@@ -12,33 +12,75 @@ using Microsoft.EntityFrameworkCore;
 namespace BggExt.Controllers;
 
 [ApiController]
-[Route("library")]
+[Route("api/library")]
 public class LibraryController(BoardGameDbContext _context) : ControllerBase
 {
     [AllowAnonymous]
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetLibrary(string id, bool includeGames)
+    [HttpGet]
+    public async Task<IActionResult> GetLibrariesAsync()
     {
-        var libraryQuery = _context.Libraries.Where(l => l.Id.ToLower() == id.ToLower());
-        if(includeGames)
-        {
-            libraryQuery = libraryQuery
-            .Include(l => l.LibraryData)
-            .ThenInclude(d => d.BoardGame);
-        }
-        var library = await libraryQuery.FirstOrDefaultAsync();
+        var libraries = await _context.Libraries.ToListAsync();
+        return CreatedAtAction(nameof(GetLibrariesAsync), libraries);
+    }
+
+    [AllowAnonymous]
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetLibraryAsync(string id, bool includeGames)
+    {
+        var library = await GetLibraryInternalAsync(id, includeGames);
         if (library == null)
         {
             return BadRequest($"Library '{id}' was not found");
         }
-        return CreatedAtAction(nameof(GetLibrary), library);
+        return CreatedAtAction(nameof(GetLibraryAsync), library);
+    }
+
+    private async Task<bool> DoesUserHaveEditPermission(UserManager<ApplicationUser> userManager, Library library)
+    {
+        if (User.Identity == null || User.Identity.Name == null)
+        {
+            return false;
+        }
+        var user = await userManager.FindByNameAsync(User.Identity.Name)!;
+        if (user == null)
+        {
+            return false;
+        }
+        var isAdmin = await userManager.IsInRoleAsync(user, "Administrator");
+        var isOwner = user == library.Owner;
+        return isOwner || isAdmin;
+    }
+
+    private async Task<Library?> GetLibraryInternalAsync(string id, bool includeGames)
+    {
+        var library = _context.Libraries.Where(l => l.Id.ToLower() == id.ToLower());
+        if (includeGames)
+        {
+            library = library
+            .Include(l => l.LibraryData)
+            .ThenInclude(d => d.BoardGame);
+        }
+        return await library.FirstOrDefaultAsync();
+    }
+
+    [AllowAnonymous]
+    [HttpGet("canedit")]
+    public async Task<IActionResult> CanEditAsync(string id, [FromServices] UserManager<ApplicationUser> userManager)
+    {
+        var library = await GetLibraryInternalAsync(id, includeGames: false);
+        if (library == null)
+        {
+            return BadRequest($"Library '{id}' was not found");
+        }
+        var result = await DoesUserHaveEditPermission(userManager, library);
+        return CreatedAtAction(nameof(CanEditAsync), result);
     }
 
     [Authorize(Roles = "Administrator")]
     [HttpPost("setsyncstate/{id}")]
     public async Task<IActionResult> SetSyncState(string id, [FromBody] bool isEnabled)
     {
-        var library = await _context.Libraries.Where(l => l.Id.ToLower() == id.ToLower()).FirstAsync();
+        var library = await GetLibraryInternalAsync(id, false);
         if (library == null)
         {
             return BadRequest($"Library '{id}' was not found");
@@ -57,7 +99,7 @@ public class LibraryController(BoardGameDbContext _context) : ControllerBase
         [FromServices] UserManager<ApplicationUser> userManager,
         [FromServices] ISynchronizationJobQueue jobQueue)
     {
-        var library = await _context.Libraries.Where(l => l.Id.ToLower() == id.ToLower()).FirstAsync();
+        var library = await GetLibraryInternalAsync(id, includeGames: false);
         if (library == null)
         {
             return BadRequest($"Library '{id}' does not exist.");
@@ -68,15 +110,7 @@ public class LibraryController(BoardGameDbContext _context) : ControllerBase
             // Should never happen due to authorization requirement
             return Unauthorized();
         }
-        var user = await userManager.FindByNameAsync(User.Identity.Name)!;
-        if (user == null)
-        {
-            // Should never happen due to authorization requirement
-            return Unauthorized();
-        }
-        var isAdmin = await userManager.IsInRoleAsync(user, "Administrator");
-        var isOwner = user == library.Owner;
-        if (!isAdmin && !isOwner)
+        if (!await DoesUserHaveEditPermission(userManager, library))
         {
             return Unauthorized("Only the owner of this library or an admin may use this API.");
         }

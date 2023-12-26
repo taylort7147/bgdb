@@ -2,47 +2,6 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from "prop-types";
 import { useToken } from "../useToken";
 
-// type BoardGame = {
-//     id: number;
-//     name: string;
-//     description: string;
-//     yearPublished: number;
-//     minPlayers: number;
-//     maxPlayers: number;
-//     playingTimeMinutes: number;
-//     minPlayTimeMinutes: number;
-//     maxPlayTimeMinutes: number;
-//     minAge: number;
-//     averageWeight: number;
-//     mechanics: Mechanic[];
-//     categories: Category[];
-//     families: Family[];
-//     thumbnail?: Image;
-//     image?: Image;
-// };
-
-// type Mechanic = {
-//     id: number;
-//     name: string;
-//     boardGames: BoardGame[] | null;
-// };
-
-// type Category = {
-//     id: number;
-//     name: string;
-//     boardGames: BoardGame[] | null;
-// };
-
-// type Family = {
-//     id: number;
-//     name: string;
-//     boardGames: BoardGame[] | null;
-// };
-
-// type Image = {
-//     id: number;
-//     imageData: string;
-// };
 export default function BoardGame({ boardGameId }) {
     const { token, setToken } = useToken();
     console.log(token);
@@ -50,7 +9,7 @@ export default function BoardGame({ boardGameId }) {
     console.log(`accessToken: ${accessToken}`);
     // fetch games and map to type
     const [game, setGames] = useState();
-    const url = `BoardGame/${boardGameId}`;
+    const url = `api/boardgame/${boardGameId}`;
     console.log(url);
     useEffect(() => {
         fetch(url, {

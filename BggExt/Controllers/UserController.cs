@@ -14,7 +14,7 @@ using Microsoft.IdentityModel.Tokens;
 namespace BggExt.Controllers;
 
 [ApiController]
-[Route("user")]
+[Route("api/user")]
 public class UserController(UserManager<ApplicationUser> _userManager) : ControllerBase
 {
     [HttpGet]

@@ -15,7 +15,7 @@ export class LibrarySyncStateSwitch extends Component {
     }
 
     handleChange(checked) {
-        fetch(`library/setsyncstate/${this.libraryId}`, {
+        fetch(`api/library/setsyncstate/${this.libraryId}`, {
             method: "POST",
             headers: new Headers({
                 'Authorization': `Bearer ${getToken()?.accessToken}`,

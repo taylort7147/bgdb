@@ -46,7 +46,7 @@ export const BoardGameTable = () => {
     // fetch games and map to type
     const [games, setGames] = useState<BoardGame[]>([]);
     useEffect(() => {
-        fetch('BoardGame')
+        fetch('api/boardgame')
             .then(response => response.json())
             .then(data => {
                 setGames(data);

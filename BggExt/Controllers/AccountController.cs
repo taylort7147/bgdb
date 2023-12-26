@@ -14,7 +14,7 @@ using Microsoft.IdentityModel.Tokens;
 namespace BggExt.Controllers;
 
 [ApiController]
-[Route("account")]
+[Route("api/account")]
 public class AccountController(BoardGameDbContext _context) : ControllerBase
 {
     [HttpPost("register")]

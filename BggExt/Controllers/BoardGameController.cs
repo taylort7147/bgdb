@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace BggExt.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/boardgame")]
 public class BoardGameController(BoardGameDbContext _context, XmlApi2.Api _api) : ControllerBase
 {
     [HttpGet]

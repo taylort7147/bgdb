@@ -90,7 +90,7 @@ app.MapControllerRoute(
     "{controller}/{action=Index}/{id?}");
 // Place Identity routing after controller routing because Swagger is 
 // configured for "first-come-first-serve" strategy for API routes.
-app.MapGroup("/account").MapIdentityApi<ApplicationUser>();
+app.MapGroup("api/account").MapIdentityApi<ApplicationUser>();
 
 app.MapFallbackToFile("index.html");
 

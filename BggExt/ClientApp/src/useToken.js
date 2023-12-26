@@ -11,7 +11,7 @@ function getToken() {
 function refreshToken(token, setToken) {
     console.log("Refreshing token");
     const body = JSON.stringify({ refreshToken: token.refreshToken });
-    fetch("./account/refresh", {
+    fetch("api/account/refresh", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
