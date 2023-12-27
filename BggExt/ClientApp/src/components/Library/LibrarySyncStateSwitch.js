@@ -15,6 +15,10 @@ export class LibrarySyncStateSwitch extends Component {
     }
 
     handleChange(checked) {
+        // Assume the operation is successful
+        this.setState({checked: checked});
+
+        // Now make the API call and update the state
         fetch(`api/library/setsyncstate/${this.libraryId}`, {
             method: "POST",
             headers: new Headers({
