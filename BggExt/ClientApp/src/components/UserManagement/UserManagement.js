@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { LibrarySyncStateSwitch } from "../Library/LibrarySyncStateSwitch";
 import { useToken } from "../../useToken";
+import UserRoleConfiguration from "../UserRoleConfiguration/UserRoleConfiguration";
 
 export default function UserManagement() {
     var { token } = useToken();
@@ -23,12 +24,13 @@ export default function UserManagement() {
         <div className="user-management-wrapper">
             <h1>User Management</h1>
             <div className="user-management-body">
-                <table>
+                <table className="table table-striped">
                     <thead>
                         <tr>
                             <th>Username</th>
                             <th>Library</th>
-                            <th>Synchronization Enabled</th>
+                            <th>Enable Synchronization</th>
+                            <th>Roles</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -41,9 +43,14 @@ export default function UserManagement() {
                                         <td>{(user.library !== null)
                                             ? user.library.id
                                             : "N/A"}</td>
-                                        <td>{(user.library != null)
-                                            ? <LibrarySyncStateSwitch libraryId={user.library.id} initialState={user.library.isSynchronizationEnabled} />
-                                            : null}</td>
+                                        <td>
+                                            {(user.library != null)
+                                                ? <LibrarySyncStateSwitch libraryId={user.library.id} initialState={user.library.isSynchronizationEnabled} />
+                                                : null}
+                                        </td>
+                                        <td>
+                                            <UserRoleConfiguration userId={user.id} />
+                                        </td>
                                     </tr>);
                             })
                         }

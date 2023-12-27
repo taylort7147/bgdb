@@ -78,14 +78,12 @@ public class AccountController(BoardGameDbContext _context) : ControllerBase
         return Unauthorized();
     }
 
-    
-
     [HttpGet("library")]
     [Authorize]
     public async Task<IActionResult> GetLibrary(UserManager<ApplicationUser> userManager)
     {
         var user = await userManager.GetUserAsync(User);
-        if(user == null)
+        if (user == null)
         {
             return Unauthorized();
         }
