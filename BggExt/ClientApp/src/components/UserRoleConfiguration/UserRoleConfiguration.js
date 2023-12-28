@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getToken } from '../../useToken';
 import UserRoleSwitch from '../UserRoleSwitch/UserRoleSwitch';
 
-function addRole(userId, role) {
+export function addRole(userId, role) {
     var body = {
         userId: userId,
         role: role
@@ -17,7 +17,7 @@ function addRole(userId, role) {
     });
 }
 
-function removeRole(userId, role) {
+export function removeRole(userId, role) {
     var body = {
         userId: userId,
         role: role
@@ -32,7 +32,7 @@ function removeRole(userId, role) {
     })
 }
 
-async function getAllRoles() {
+export async function getAllRoles() {
     return await fetch(`api/user/roles`, {
         method: "GET",
         headers: new Headers({
@@ -41,7 +41,7 @@ async function getAllRoles() {
     }).then(response => response.json());
 }
 
-async function getUserRoles(userId) {
+export async function getUserRoles(userId) {
     var response = await fetch(`api/user/roles?userId=${userId}`, {
         method: "GET",
         headers: new Headers({

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { LibrarySyncStateSwitch } from "../Library/LibrarySyncStateSwitch";
-import { useToken } from "../../useToken";
-import UserRoleConfiguration from "../UserRoleConfiguration/UserRoleConfiguration";
+import { LibrarySyncStateSwitch } from "../../Library/LibrarySyncStateSwitch";
+import { useToken } from "../../../useToken";
+import UserRoleConfiguration from "../../UserRoleConfiguration/UserRoleConfiguration";
 
 export default function UserManagement() {
     var { token } = useToken();

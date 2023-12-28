@@ -1,53 +1,76 @@
-import React, { Component } from 'react';
-import { Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink} from 'reactstrap';
+import React, { useContext, useEffect, useState } from 'react';
+import { Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import Logout from "./Logout/Logout"
 import './NavMenu.css';
+import { AppContext } from '../AppContext';
 
-export class NavMenu extends Component {
-    static displayName = NavMenu.name;
+export function NavMenu() {
+    const [collapsed, setCollapsed] = useState();
+    const [isLoggedIn, setIsLoggedIn] = useState();
+    const [isAdmin, setIsAdmin] = useState();
+    const { token } = useContext(AppContext);
 
-    constructor(props) {
-        super(props);
+    const toggleNavbar = () => {
+        setCollapsed(!collapsed);
+    };
 
-        this.toggleNavbar = this.toggleNavbar.bind(this);
-        this.state = {
-            collapsed: true
-        };
-    }
+    useEffect(() => {
+        setIsLoggedIn(token != undefined);
+    }, [token]);
 
-    toggleNavbar() {
-        this.setState({
-            collapsed: !this.state.collapsed
+    const getUserDetails = async () => {
+        return fetch(`/api/account/details`,
+            {
+                method: "GET",
+                headers: new Headers({
+                    'Authorization': `Bearer ${token?.accessToken}`
+                })
+            }).then(response => response.json());
+    };
+
+    useEffect(() => {
+        getUserDetails().then(details => {
+            console.log(details);
+            setIsAdmin(details.roles.includes("Administrator"));
         });
-    }
+    }, [token]);
 
 
-    render() {
-        return (
-            <header>
-                <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3"
-                    container light>
-                    <NavbarBrand tag={Link} to="/">ReactTemplate</NavbarBrand>
-                    <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
-                    <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={!this.state.collapsed} navbar>
-                        <ul className="navbar-nav flex-grow">
+    return (
+        <header>
+            <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3"
+                container light>
+                <NavbarBrand tag={Link} to="/">BoardGameDB</NavbarBrand>
+                <NavbarToggler onClick={toggleNavbar} className="mr-2" />
+                <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={!collapsed} navbar>
+                    <ul className="navbar-nav flex-grow">
+                        {isAdmin &&
                             <NavItem>
-                                <NavLink tag={Link} className="text-dark" to="/">Home</NavLink>
+                                <NavLink tag={Link} className="text-dark" to="/admin">Admin</NavLink>
                             </NavItem>
+                        }
+                        <NavItem>
+                            <NavLink tag={Link} className="text-dark" to="/">Home</NavLink>
+                        </NavItem>
+                        <NavItem>
+                            <NavLink tag={Link} className="text-dark" to="/board-game-table">All Games</NavLink>
+                        </NavItem>
+                        <NavItem>
+                            <NavLink tag={Link} className="text-dark" to="/library">Libraries</NavLink>
+                        </NavItem>
+                        {isLoggedIn ?
                             <NavItem>
-                                <NavLink tag={Link} className="text-dark" to="/board-game-table">All Games</NavLink>
+                                <NavLink tag={Link} className="text-dark" to="/account/logout">Logout</NavLink>
                             </NavItem>
+                            :
                             <NavItem>
-                                <NavLink tag={Link} className="text-dark" to="/library">Libraries</NavLink>
+                                <NavLink tag={Link} className="text-dark" to="/account/login">Login/Register</NavLink>
                             </NavItem>
-                            <NavItem>
-                                <Logout />
-                            </NavItem>
-                        </ul>
-                    </Collapse>
-                </Navbar>
-            </header>
-        );
-    }
+
+                        }
+                    </ul>
+                </Collapse>
+            </Navbar>
+        </header>
+    );
 }

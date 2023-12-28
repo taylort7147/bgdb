@@ -50,6 +50,7 @@ function useToken() {
 
     const removeToken = () => {
         localStorage.removeItem(tokenName);
+        setToken(undefined);
     }
 
     const refreshIntervalMs = 600 * 1000;

@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from "prop-types";
-import { useToken } from "../useToken";
+import { AppContext } from '../AppContext';
 
 export default function BoardGame({ boardGameId }) {
-    const { token, setToken } = useToken();
+    const {token} = useContext(AppContext);
     console.log(token);
     const accessToken = token?.accessToken;
     console.log(`accessToken: ${accessToken}`);

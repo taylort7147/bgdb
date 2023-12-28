@@ -78,8 +78,8 @@ public class AccountController(BoardGameDbContext _context) : ControllerBase
         return Unauthorized();
     }
 
-    [HttpGet("library")]
     [Authorize]
+    [HttpGet("library")]
     public async Task<IActionResult> GetLibrary(UserManager<ApplicationUser> userManager)
     {
         var user = await userManager.GetUserAsync(User);
@@ -88,5 +88,38 @@ public class AccountController(BoardGameDbContext _context) : ControllerBase
             return Unauthorized();
         }
         return CreatedAtAction(nameof(GetLibrary), user.Library.LibraryData);
+    }
+
+    public class ApplicationUserDetails
+    {
+        public string Id { get; set; }
+
+        public string? UserName { get; set; }
+
+        public IList<string> Roles { get; set; }
+
+        public ApplicationUserDetails(ApplicationUser user)
+        {
+            Id = user.Id;
+            UserName = user.UserName;
+            Roles = new List<string>();
+        }
+    }
+
+    [Authorize]
+    [HttpGet("details")]
+        public async Task<IActionResult> GetDetails(
+            [FromServices] UserManager<ApplicationUser> userManager,
+            [FromServices] RoleManager<IdentityRole> roleManager)
+    {
+        var user = await userManager.GetUserAsync(User);
+        if (user == null)
+        {
+            return Unauthorized();
+        }
+
+        var details = new ApplicationUserDetails(user);
+        details.Roles = await userManager.GetRolesAsync(user);
+        return CreatedAtAction(nameof(GetDetails), details);
     }
 }

@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import PropTypes from "prop-types";
 import "./Login.css";
+import { useToken } from "../../useToken";
+import { useNavigate } from "react-router-dom";
+import { AppContext } from "../../AppContext";
 
 async function loginUser(credentials) {
     console.log("loginUser");
@@ -14,10 +17,12 @@ async function loginUser(credentials) {
         .then(data => data.json())
 }
 
-export default function Login({ setToken }) {
+export default function Login() {
+    const {setToken} = useContext(AppContext);
     const [username, setUserName] = useState();
     const [password, setPassword] = useState();
-
+    const navigate = useNavigate();
+    
     const handleSubmit = async e => {
         e.preventDefault();
         var email = username;
@@ -26,6 +31,7 @@ export default function Login({ setToken }) {
             password
         });
         setToken(token);
+        navigate(-1);
     }
 
     return (
@@ -47,7 +53,3 @@ export default function Login({ setToken }) {
         </div>
     )
 }
-
-Login.propTypes = {
-    setToken: PropTypes.func.isRequired
-};

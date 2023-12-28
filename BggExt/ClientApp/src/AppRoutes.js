@@ -5,10 +5,12 @@ import { FetchData } from "./components/FetchData";
 import { Home } from "./components/Home";
 import BoardGame from "./components/BoardGame";
 import { BoardGameTable } from "./components/BoardGameTable";
-import UserManagement from "./components/UserManagement/UserManagement";
+import UserManagement from "./components/Admin/UserManagement/UserManagement";
 import LibraryTable from "./components/Library/LibraryTable";
 import Library from "./components/Library/Library";
-
+import Logout from "./components/Logout/Logout";
+import Login from "./components/Login/Login";
+import AdminDashboard from "./components/Admin/AdminDashboard/AdminDashboard";
 
 const AppRoutes = [
     {
@@ -16,24 +18,28 @@ const AppRoutes = [
         element: <Home />
     },
     {
-        path: '/dashboard',
-        element: <Dashboard />
+        path: '/account/login',
+        element: <Login />
     },
     {
-        path: '/preferences',
-        element: <Preferences />
+        path: '/account/logout',
+        element: <Logout />
     },
     {
-        path: '/fetch-data',
-        element: <FetchData />
+        path: '/admin',
+        element: <AdminDashboard />
     },
     {
-        path: "/board-game",
-        element: <BoardGame boardGameId={13} />
+        path: "/admin/users",
+        element: <UserManagement />
     },
     {
         path: "/board-game-table",
         element: <BoardGameTable />
+    },
+    {
+        path: '/dashboard',
+        element: <Dashboard />
     },
     {
         path: "/library",
@@ -44,8 +50,8 @@ const AppRoutes = [
         element: <Library />
     },
     {
-        path: "/admin/users",
-        element: <UserManagement />
+        path: '/preferences',
+        element: <Preferences />
     }
 ];
 

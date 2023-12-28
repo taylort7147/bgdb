@@ -1,6 +1,6 @@
 {
-  "short_name": "ReactTemplate",
-  "name": "ReactTemplate",
+  "short_name": "BoardGameDB",
+  "name": "BoardGameDB",
   "icons": [
     {
       "src": "favicon.ico",
