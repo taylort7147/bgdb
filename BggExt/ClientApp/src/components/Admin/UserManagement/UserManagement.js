@@ -1,23 +1,21 @@
-import React, { useEffect, useState } from "react";
-import { LibrarySyncStateSwitch } from "../../Library/LibrarySyncStateSwitch";
-import { useToken } from "../../../useToken";
-import UserRoleConfiguration from "../../UserRoleConfiguration/UserRoleConfiguration";
+import React, { useContext, useEffect, useState } from "react";
+import LibrarySyncStateSwitch from "../../Library/LibrarySyncStateSwitch/LibrarySyncStateSwitch";
+import UserRoleConfiguration from "../UserRoleConfiguration/UserRoleConfiguration";
+import { AppContext } from "../../../AppContext";
 
-export default function UserManagement() {
-    var { token } = useToken();
-    var accessToken = token?.accessToken;
+export default UserManagement;
+export function UserManagement() {
+    const { token } = useContext(AppContext);
     const [users, setUsers] = useState([]);
     useEffect(() => {
-        fetch("api/user", {
+        fetch("/api/user", {
             method: "GET",
             headers: new Headers({
-                'Authorization': `Bearer ${accessToken}`,
+                'Authorization': `Bearer ${token?.accessToken}`,
             }),
         })
             .then(response => response.json())
-            .then(data => {
-                setUsers(data);
-            });
+            .then(data => setUsers(data));
     }, []);
     console.log(users);
     return (

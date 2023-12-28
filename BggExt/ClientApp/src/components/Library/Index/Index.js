@@ -1,24 +1,21 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { AppContext } from '../../AppContext';
+import { AppContext } from '../../../AppContext';
 
-export default function LibraryTable({ id }) {
+export default Index;
+export function Index() {
     const { token } = useContext(AppContext)
-    const accessToken = token?.accessToken;
-    console.log(`accessToken: ${accessToken}`);
     const [libraries, setLibraries] = useState([]);
-    const url = `api/library`;
+
     useEffect(() => {
-        fetch(url, {
+        fetch(`api/library`, {
             method: 'GET',
             headers: new Headers({
-                'Authorization': `Bearer ${accessToken}`
+                'Authorization': `Bearer ${token?.accessToken}`
             }),
         })
             .then(response => response.json())
-            .then(data => {
-                setLibraries(data);
-            });
+            .then(data => setLibraries(data))
     }, []);
 
     if (libraries == null) {

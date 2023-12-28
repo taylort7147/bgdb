@@ -1,9 +1,9 @@
 import React, { useContext, useState } from "react";
 import PropTypes from "prop-types";
 import "./Login.css";
-import { useToken } from "../../useToken";
+import { useToken } from "../../../useToken";
 import { useNavigate } from "react-router-dom";
-import { AppContext } from "../../AppContext";
+import { AppContext } from "../../../AppContext";
 
 async function loginUser(credentials) {
     console.log("loginUser");
@@ -17,7 +17,8 @@ async function loginUser(credentials) {
         .then(data => data.json())
 }
 
-export default function Login() {
+export default Login;
+export function Login() {
     const {setToken} = useContext(AppContext);
     const [username, setUserName] = useState();
     const [password, setPassword] = useState();

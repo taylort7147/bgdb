@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { getToken } from '../../useToken';
-import UserRoleSwitch from '../UserRoleSwitch/UserRoleSwitch';
+import { getToken } from '../../../useToken';
+import { UserRoleSwitch } from '../UserRoleSwitch/UserRoleSwitch';
 
 export function addRole(userId, role) {
     var body = {
@@ -52,7 +52,8 @@ export async function getUserRoles(userId) {
     return result;
 }
 
-export default function UserRoleConfiguration({ userId }) {
+export default UserRoleConfiguration;
+export function UserRoleConfiguration({ userId }) {
     var [allRoles, setAllRoles] = useState([]);
     var [userRoles, setUserRoles] = useState([]);
     var [roleStates, setRoleStates] = useState([]);

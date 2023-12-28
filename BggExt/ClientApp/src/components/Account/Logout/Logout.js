@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { AppContext } from "../../AppContext";
+import { AppContext } from "../../../AppContext";
 
 function logout(accessToken) {
     console.log("logout");
@@ -13,7 +13,8 @@ function logout(accessToken) {
     });
 }
 
-export default function Logout() {
+export default Logout;
+export function Logout() {
     const { token, removeToken } = useContext(AppContext);
 
     useEffect(() => {

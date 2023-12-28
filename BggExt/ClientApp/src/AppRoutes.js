@@ -1,16 +1,8 @@
-import Dashboard from "./components/Dashboard/Dashboard";
-import Preferences from "./components/Preferences/Preferences";
-
-import { FetchData } from "./components/FetchData";
 import { Home } from "./components/Home";
-import BoardGame from "./components/BoardGame";
 import { BoardGameTable } from "./components/BoardGameTable";
-import UserManagement from "./components/Admin/UserManagement/UserManagement";
-import LibraryTable from "./components/Library/LibraryTable";
-import Library from "./components/Library/Library";
-import Logout from "./components/Logout/Logout";
-import Login from "./components/Login/Login";
-import AdminDashboard from "./components/Admin/AdminDashboard/AdminDashboard";
+import * as Library from "./components/Library/Library";
+import * as Account from "./components/Account/Account";
+import * as Admin from "./components/Admin/Admin";
 
 const AppRoutes = [
     {
@@ -18,40 +10,40 @@ const AppRoutes = [
         element: <Home />
     },
     {
+        path: '/account/dashboard',
+        element: <Account.Dashboard />
+    },
+    {
         path: '/account/login',
-        element: <Login />
+        element: <Account.Login />
     },
     {
         path: '/account/logout',
-        element: <Logout />
+        element: <Account.Logout />
+    },
+    {
+        path: '/account/preferences',
+        element: <Account.Preferences />
     },
     {
         path: '/admin',
-        element: <AdminDashboard />
+        element: <Admin.Dashboard />
     },
     {
         path: "/admin/users",
-        element: <UserManagement />
+        element: <Admin.UserManagement />
     },
     {
         path: "/board-game-table",
         element: <BoardGameTable />
     },
     {
-        path: '/dashboard',
-        element: <Dashboard />
-    },
-    {
         path: "/library",
-        element: <LibraryTable />
+        element: <Library.Index />
     },
     {
         path: "/library/:libraryId",
-        element: <Library />
-    },
-    {
-        path: '/preferences',
-        element: <Preferences />
+        element: <Library.LibraryTable />
     }
 ];
 

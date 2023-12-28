@@ -1,9 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Button, NavLink } from 'reactstrap';
+import { NavLink } from 'reactstrap';
 
-export default function AdminDashboard() {
-    
+export default Dashboard;
+export function Dashboard() {
+
     return (
         <div className="admin-dashboard">
             <h1>Admin Dashboard</h1>

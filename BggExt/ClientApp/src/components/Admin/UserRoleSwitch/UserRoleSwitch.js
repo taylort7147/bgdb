@@ -2,7 +2,8 @@ import React from 'react';
 import Switch from "react-switch";
 import { Label } from 'reactstrap';
 
-export default function UserRoleSwitch({ role, checked, onChange }) {
+export default UserRoleSwitch;
+export function UserRoleSwitch({ role, checked, onChange }) {
     return (
         <div className="row">
             <Switch className="col-auto" onChange={onChange} checked={checked} />
