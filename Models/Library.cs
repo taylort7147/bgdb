@@ -12,7 +12,7 @@ public class Library
     [DataType(DataType.DateTime)]
     public DateTime? LastSynchronized { get; set; }
 
-    public bool IsSynchronizationEnabled { get; set; } = false;
+    public bool IsEnabled { get; set; } = false;
 
     public virtual IList<BoardGameLibraryData> LibraryData { get; set; } = default!;
 

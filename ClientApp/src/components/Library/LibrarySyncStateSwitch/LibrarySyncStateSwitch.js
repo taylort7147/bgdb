@@ -15,7 +15,7 @@ export function LibrarySyncStateSwitch({ libraryId }) {
             })
         })
             .then(response => response.json())
-            .then(data => setIsChecked(data.isSynchronizationEnabled))
+            .then(data => setIsChecked(data.isEnabled))
     }, []);
 
     var handleChange = checked => {

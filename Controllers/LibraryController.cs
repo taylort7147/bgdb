@@ -88,7 +88,7 @@ public class LibraryController(BoardGameDbContext _context) : ControllerBase
         {
             return BadRequest($"Library '{id}' was not found");
         }
-        library.IsSynchronizationEnabled = isEnabled;
+        library.IsEnabled = isEnabled;
 
         if (isEnabled)
         {
@@ -96,7 +96,7 @@ public class LibraryController(BoardGameDbContext _context) : ControllerBase
         }
 
         await _context.SaveChangesAsync();
-        return CreatedAtAction(nameof(SetSyncState), library.IsSynchronizationEnabled);
+        return CreatedAtAction(nameof(SetSyncState), library.IsEnabled);
     }
 
     [Authorize(Roles = "Administrator,LibraryOwner")]

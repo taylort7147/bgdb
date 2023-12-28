@@ -27,7 +27,7 @@ export function UserManagement() {
                         <tr>
                             <th>Username</th>
                             <th>Library</th>
-                            <th>Enable Synchronization</th>
+                            <th>Enabled</th>
                             <th>Roles</th>
                         </tr>
                     </thead>
@@ -43,7 +43,7 @@ export function UserManagement() {
                                             : "N/A"}</td>
                                         <td>
                                             {(user.library != null)
-                                                ? <LibrarySyncStateSwitch libraryId={user.library.id} initialState={user.library.isSynchronizationEnabled} />
+                                                ? <LibrarySyncStateSwitch libraryId={user.library.id} initialState={user.library.isEnabled} />
                                                 : null}
                                         </td>
                                         <td>
