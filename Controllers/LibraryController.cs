@@ -78,7 +78,10 @@ public class LibraryController(BoardGameDbContext _context) : ControllerBase
 
     [Authorize(Roles = "Administrator")]
     [HttpPost("setsyncstate/{id}")]
-    public async Task<IActionResult> SetSyncState(string id, [FromBody] bool isEnabled)
+    public async Task<IActionResult> SetSyncState(
+		string id,
+        [FromBody] bool isEnabled,
+        [FromServices] ISynchronizationJobQueue jobQueue)
     {
         var library = await GetLibraryInternalAsync(id, false);
         if (library == null)
@@ -87,7 +90,10 @@ public class LibraryController(BoardGameDbContext _context) : ControllerBase
         }
         library.IsSynchronizationEnabled = isEnabled;
 
-        // TODO: Add/remove library to/from sync service
+        if (isEnabled)
+        {
+    		await jobQueue.QueueJobAsync(id);
+        }
 
         await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(SetSyncState), library.IsSynchronizationEnabled);

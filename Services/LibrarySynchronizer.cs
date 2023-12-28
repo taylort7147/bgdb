@@ -30,7 +30,7 @@ public class LibrarySynchronizer(
                     .Include(l => l.LibraryData)
                     .ThenInclude(d => d.BoardGame)
                     .FirstAsync();
-                if(library == null)
+                if (library == null)
                 {
                     _logger.LogError($"Unable to find library '{libraryId}'");
                     return Status.Error;
@@ -44,13 +44,16 @@ public class LibrarySynchronizer(
                 }
 
                 // Remove any games from the library that are no longer there
-                for (var i = library.LibraryData.Count - 1; i != 0; --i)
+                if (library.LibraryData.Count > 0)
                 {
-                    var libraryItem = library.LibraryData[i];
-                    if (boardGames.Where(b => b.Id == libraryItem.BoardGame.Id).Count() == 0)
+                    for (var i = library.LibraryData.Count - 1; i != 0; --i)
                     {
-                        _logger.LogInformation($"Removing board game '{libraryItem.BoardGame.Name}' from library '{library.Id}'");
-                        library.LibraryData.RemoveAt(i);
+                        var libraryItem = library.LibraryData[i];
+                        if (boardGames.Where(b => b.Id == libraryItem.BoardGame.Id).Count() == 0)
+                        {
+                            _logger.LogInformation($"Removing board game '{libraryItem.BoardGame.Name}' from library '{library.Id}'");
+                            library.LibraryData.RemoveAt(i);
+                        }
                     }
                 }
 

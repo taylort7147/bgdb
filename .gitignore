@@ -190,6 +190,7 @@ ClientBin/
 *.pfx
 *.publishsettings
 orleans.codegen.cs
+pgdata/
 
 /node_modules
 
@@ -241,4 +242,3 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
-
