@@ -1,26 +1,36 @@
 using System.Xml.Linq;
-using System.IO;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace BggExt.Web;
 
 public class Downloader(HttpClient _httpClient)
 {
-    public async Task<Stream> Download(string uri)
+    public async Task<Stream> Download(Uri uri)
     {
         return await _httpClient.GetStreamAsync(uri);
     }
 
-    public async Task<string> DownloadString(string uri)
+    public async Task<string> DownloadString(Uri uri)
     {
         var reader = new StreamReader(await Download(uri));
         return reader.ReadToEnd();
     }
 
-    public async Task<XElement> DownloadXml(string uri)
+    public async Task<XElement> DownloadXml(Uri uri)
     {
         return await XElement.LoadAsync(await Download(uri), LoadOptions.None, CancellationToken.None);
+    }
+
+    public async Task DownloadToFile(Uri uri, string filePath)
+    {
+        var downloadStream = await Download(uri);
+        using(var fileStream = File.OpenWrite(filePath))
+        {
+            await downloadStream.CopyToAsync(fileStream);
+        }
+    }
+
+    public async Task<byte[]> DownloadByteArray(Uri uri)
+    {
+        return await _httpClient.GetByteArrayAsync(uri);
     }
 }

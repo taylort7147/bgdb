@@ -9,14 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.Extensions.DependencyInjection;
-using BoardGame = BggExt.Models.BoardGame;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.Extensions.Configuration.Json;
+using Microsoft.Extensions.FileProviders;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,10 +21,13 @@ builder.Services.AddControllers(opts =>
         opts.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles
 );
 
+
+
 builder.Services
     .AddConfiguredSwaggerUI()
     .AddSingleton<Downloader>()
     .AddSingleton<Api>()
+    .AddSingleton<ImageStore>()
     .AddSingleton<LibrarySynchronizer>()
     .AddSingleton<SynchronizationSchedulerService>()
     .AddSingleton<IJobQueue>(ctx =>
@@ -48,7 +44,6 @@ builder.Services
         // Set BaseURL and stuff here, more efficient than making a new client all the time
     })
     .SetHandlerLifetime(TimeSpan.FromMinutes(15));
-
 
 var connectionString = builder.Configuration.GetConnectionString("BoardGameDbContext") ??
     throw new InvalidOperationException("Connection string 'BoardGameDbContext' not found.");

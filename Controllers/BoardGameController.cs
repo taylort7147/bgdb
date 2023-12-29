@@ -2,8 +2,6 @@ using BggExt.Data;
 using BggExt.Models;
 using BggExt.Web;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,7 +9,7 @@ namespace BggExt.Controllers;
 
 [ApiController]
 [Route("api/boardgame")]
-public class BoardGameController(BoardGameDbContext _context, XmlApi2.Api _api) : ControllerBase
+public class BoardGameController(BoardGameDbContext _context) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetGames(CancellationToken token)
@@ -51,32 +49,20 @@ public class BoardGameController(BoardGameDbContext _context, XmlApi2.Api _api) 
     [Authorize]
     public async Task<IActionResult> GetGame(int id)
     {
-        var result = await _api.GetBoardGame(id);
-        if (result.Status != XmlApi2.ApiResult.OperationStatus.Success)
+        var game = await _context.BoardGames
+            .Include(b => b.Mechanics)
+            .Include(b => b.Categories)
+            .Include(b => b.Families)
+            .Include(b => b.Image)
+            .Include(b => b.Thumbnail)
+            .Where(b => b.Id == id)
+            .FirstOrDefaultAsync();
+        
+        if(game == null)
         {
             return NotFound();
         }
 
-        var b = result.Data as XmlApi2.BoardGame ?? throw new InvalidCastException("Could not cast XmlApi2 result data to BoardGame.");
-        BoardGame boardGame = new()
-        {
-            Id = b.Id,
-            Name = b.Name,
-            Description = b.Description,
-            YearPublished = b.YearPublished,
-            MinPlayers = b.MinPlayers,
-            MaxPlayers = b.MaxPlayers,
-            PlayingTimeMinutes = b.PlayingTimeMinutes,
-            MinPlayTimeMinutes = b.MinPlayTimeMinutes,
-            MaxPlayTimeMinutes = b.MaxPlayTimeMinutes,
-            MinAge = b.MinAge,
-            AverageWeight = b.AverageWeight,
-            Mechanics = b.Mechanics.Select(m => new Mechanic() { Name = m.Value, Id = m.Id }).ToList(),
-            Categories = b.Categories.Select(m => new Category() { Name = m.Value, Id = m.Id }).ToList(),
-            Families = b.Families.Select(m => new Family() { Name = m.Value, Id = m.Id }).ToList(),
-            Thumbnail = null,
-            Image = null
-        };
-        return new CreatedAtActionResult(nameof(BoardGameController), nameof(GetGame), new { id = id }, boardGame);
+        return CreatedAtAction(nameof(GetGame), game);
     }
 }

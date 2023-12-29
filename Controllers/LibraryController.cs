@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace BggExt.Controllers;
 
@@ -30,7 +31,7 @@ public class LibraryController(BoardGameDbContext _context) : ControllerBase
         var library = await GetLibraryInternalAsync(id, includeGames);
         if (library == null)
         {
-            return BadRequest($"Library '{id}' was not found");
+            return NotFound($"Library '{id}' was not found");
         }
         return CreatedAtAction(nameof(GetLibraryAsync), library);
     }
@@ -57,8 +58,8 @@ public class LibraryController(BoardGameDbContext _context) : ControllerBase
         if (includeGames)
         {
             library = library
-            .Include(l => l.LibraryData)
-            .ThenInclude(d => d.BoardGame);
+                .Include(l => l.LibraryData)
+                .ThenInclude(d => d.BoardGame);
         }
         return await library.FirstOrDefaultAsync();
     }
@@ -79,7 +80,7 @@ public class LibraryController(BoardGameDbContext _context) : ControllerBase
     [Authorize(Roles = "Administrator")]
     [HttpPost("setsyncstate/{id}")]
     public async Task<IActionResult> SetSyncState(
-		string id,
+        string id,
         [FromBody] bool isEnabled,
         [FromServices] ISynchronizationJobQueue jobQueue)
     {
@@ -92,7 +93,7 @@ public class LibraryController(BoardGameDbContext _context) : ControllerBase
 
         if (isEnabled)
         {
-    		await jobQueue.QueueJobAsync(id);
+            await jobQueue.QueueJobAsync(id);
         }
 
         await _context.SaveChangesAsync();

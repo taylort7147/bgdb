@@ -1,8 +1,4 @@
 using BggExt.Web;
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace BggExt.XmlApi2;
@@ -13,7 +9,7 @@ public class Api(Downloader _downloader)
 
     private async Task<XElement?> _CallApi(string path)
     {
-        var uri = $"{_ApiHost}/{path}";
+        var uri = new Uri($"{_ApiHost}/{path}");
         return await _downloader.DownloadXml(uri);
     }
 

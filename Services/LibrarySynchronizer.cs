@@ -14,6 +14,7 @@ namespace BggExt.Services;
 public class LibrarySynchronizer(
     IServiceScopeFactory _scopeFactory,
     XmlApi2.Api _api,
+    ImageStore _imageStore,
     ILogger<LibrarySynchronizer> _logger)
 {
     public enum Status { Success, Error, Pending };
@@ -78,7 +79,18 @@ public class LibrarySynchronizer(
                     model.AverageWeight = boardGame.AverageWeight;
                     model.Description = boardGame.Description;
                     model.MinAge = boardGame.MinAge;
-                    // TODO: The rest of the fields.
+
+                    if (boardGame.Image != null)
+                    {
+                        model.Image = await _imageStore.StoreImage(boardGame.Image);
+                    }
+
+                    if (boardGame.Thumbnail != null)
+                    {
+                        model.Thumbnail = await _imageStore.StoreImage(boardGame.Thumbnail);
+                    }
+
+                    // TODO: The rest of the fields (Mechanics, Categories, Families)
 
                     if (isNew)
                     {

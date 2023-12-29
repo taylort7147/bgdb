@@ -23,6 +23,11 @@ function renderLocation(game, canEdit, setLocation) {
     }
 }
 
+function renderImage(id) {
+    
+   return <img src={`/api/asset/img/${id}`} />;
+}
+
 export function HeaderRow() {
     return (
         <tr>
@@ -31,6 +36,7 @@ export function HeaderRow() {
             <th>Play Time</th>
             <th>Complexity</th>
             <th>Location</th>
+            <th>Thumbnail</th>
         </tr>
     );
 }
@@ -45,6 +51,7 @@ export function DataRow({ game, canEdit }) {
             <td>{renderRange(game.minPlayTimeMinutes, game.maxPlayTimeMinutes)}</td>
             <td>{game.averageWeight}</td>
             <td>{renderLocation(game, canEdit, setLocation)}</td>
+            <td>{renderImage(game.thumbnailId)}</td>
         </tr>
     );
 }
