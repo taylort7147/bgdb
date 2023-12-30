@@ -82,12 +82,12 @@ public class LibrarySynchronizer(
 
                     if (boardGame.Image != null)
                     {
-                        model.Image = await _imageStore.StoreImage(boardGame.Image);
+                        model.ImageId = (await _imageStore.StoreImage(boardGame.Image)).Id;
                     }
 
                     if (boardGame.Thumbnail != null)
                     {
-                        model.Thumbnail = await _imageStore.StoreImage(boardGame.Thumbnail);
+                        model.ThumbnailId = (await _imageStore.StoreImage(boardGame.Thumbnail)).Id;
                     }
 
                     // TODO: The rest of the fields (Mechanics, Categories, Families)
