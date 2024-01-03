@@ -39,10 +39,10 @@ export function Register() {
             password,
             passwordConfirm
         });
-        var result = response.json();
         if (response.status == 201) {
             navigate("/account/login");
         }
+        var result = await response.json();
         setErrors(result.errors);
     }
 
@@ -77,7 +77,7 @@ export function Register() {
                         {renderErrors(errors, "passwordConfirm")}
                     </div>
                     <div>
-                        <button className="form-control" type="submit">Submit</button>
+                        <button className="btn btn-primary form-control" type="submit">Submit</button>
                     </div>
                 </form>
             </div>
