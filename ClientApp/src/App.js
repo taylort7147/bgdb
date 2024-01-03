@@ -4,7 +4,7 @@ import AppRoutes from "./AppRoutes";
 import { Layout } from "./components/Layout";
 import { useToken } from "./useToken";
 import { AppContext } from "./AppContext";
-import "./custom.css";
+import "./css/custom.css";
 import "./scss/custom.scss";
 
 export default function App() {
