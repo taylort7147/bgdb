@@ -4,13 +4,10 @@ import { AppContext } from '../AppContext';
 
 export default function BoardGame({ boardGameId }) {
     const {token} = useContext(AppContext);
-    console.log(token);
     const accessToken = token?.accessToken;
-    console.log(`accessToken: ${accessToken}`);
     // fetch games and map to type
     const [game, setGames] = useState();
     const url = `api/boardgame/${boardGameId}`;
-    console.log(url);
     useEffect(() => {
         fetch(url, {
             method: 'GET',
@@ -25,8 +22,6 @@ export default function BoardGame({ boardGameId }) {
     }, []);
 
     const renderArray = (array) => {
-        console.log("renderArray");
-        console.log(array);
         // Filter out null or undefined entries
         const filteredArray = array.filter((item) => item);
         return filteredArray.map((item) => item.name).join(', ');
@@ -35,8 +30,7 @@ export default function BoardGame({ boardGameId }) {
     if (game == null) {
         return null;
     }
-    console.log("game");
-    console.log(game);
+    
     return (
         <table className='table table-striped' aria-labelledby='tabelLabel'>
             <thead>

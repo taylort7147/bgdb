@@ -31,7 +31,6 @@ export function NavMenu() {
     useEffect(() => {
         if (token != null) {
             getUserDetails().then(details => {
-                console.log(details);
                 setIsAdmin(details.roles.includes("Administrator"));
             });
         } else {

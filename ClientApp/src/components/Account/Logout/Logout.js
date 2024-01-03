@@ -2,7 +2,6 @@ import React, { useContext, useEffect } from "react";
 import { AppContext } from "../../../AppContext";
 
 function logout(accessToken) {
-    console.log("logout");
     return fetch("api/account/logout", {
         method: "POST",
         headers: new Headers({

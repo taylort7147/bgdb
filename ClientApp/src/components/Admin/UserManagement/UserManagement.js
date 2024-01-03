@@ -17,7 +17,6 @@ export function UserManagement() {
             .then(response => response.json())
             .then(data => setUsers(data));
     }, []);
-    console.log(users);
     return (
         <div className="user-management-wrapper">
             <h1>User Management</h1>
@@ -34,7 +33,6 @@ export function UserManagement() {
                     <tbody>
                         {
                             users.map((user, i) => {
-                                console.log(user);
                                 return (
                                     <tr key={i}>
                                         <td>{user.userName}</td>
