@@ -2,6 +2,10 @@ a {
     color: #0366d6;
 }
 
+.card.filter-card {
+    width: 100%;
+}
+
 .wrapper {
     padding: 20px;
 }
