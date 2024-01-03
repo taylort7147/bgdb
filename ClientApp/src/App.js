@@ -3,8 +3,9 @@ import { Route, Routes } from "react-router-dom";
 import AppRoutes from "./AppRoutes";
 import { Layout } from "./components/Layout";
 import { useToken } from "./useToken";
-import "./custom.css";
 import { AppContext } from "./AppContext";
+import "./custom.css";
+import "./scss/custom.scss";
 
 export default function App() {
     const { token, setToken, removeToken } = useToken();
