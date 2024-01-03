@@ -29,10 +29,14 @@ export function NavMenu() {
     };
 
     useEffect(() => {
-        getUserDetails().then(details => {
-            console.log(details);
-            setIsAdmin(details.roles.includes("Administrator"));
-        });
+        if (token != null) {
+            getUserDetails().then(details => {
+                console.log(details);
+                setIsAdmin(details.roles.includes("Administrator"));
+            });
+        } else {
+            setIsAdmin(false);
+        }
     }, [token]);
 
 

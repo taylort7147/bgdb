@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Asp.Versioning;
 using BggExt;
 using BggExt.Data;
@@ -17,11 +18,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers(opts =>
         opts.ModelMetadataDetailsProviders.Add(new SystemTextJsonValidationMetadataProvider())
     )
-    .AddJsonOptions(opts =>
-        opts.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles
+    .AddJsonOptions(opts =>{
+        opts.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+        opts.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;   
+    }
 );
 
 
+builder.Services.AddProblemDetails();
 
 builder.Services
     .AddConfiguredSwaggerUI()

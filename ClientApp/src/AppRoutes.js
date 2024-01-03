@@ -26,6 +26,10 @@ const AppRoutes = [
         element: <Account.Preferences />
     },
     {
+        path: '/account/_register',
+        element: <Account.Register />
+    },
+    {
         path: '/admin',
         element: <Admin.Dashboard />
     },

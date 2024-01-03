@@ -142,4 +142,30 @@ public class UserController(UserManager<ApplicationUser> _userManager) : Control
         }
         return Ok();
     }
+
+    
+    [Authorize(Roles = "Administrator")]
+    [HttpPost("delete")]
+    public async Task<IActionResult> DeleteUser(
+        [FromBody] string userId,
+        [FromServices] BoardGameDbContext context,
+        [FromServices] UserManager<ApplicationUser> userManager)
+    {        
+        var user = await context.Users
+            .Include(u => u.Library)
+            .ThenInclude(l => l.LibraryData)
+            .Where(u => u.Id.ToLower() == userId.ToLower())
+            .FirstOrDefaultAsync();
+        if (user == null)
+        {
+            return BadRequest($"User '{userId}' could not be found.");
+        }
+
+        context.LibraryData.RemoveRange(user.Library.LibraryData);
+        context.Libraries.Remove(user.Library);
+        context.Users.Remove(user);
+        await context.SaveChangesAsync();
+
+        return Ok();
+    }
 }

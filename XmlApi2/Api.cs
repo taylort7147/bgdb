@@ -1,4 +1,6 @@
 using BggExt.Web;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.IdentityModel.Tokens;
 using System.Xml.Linq;
 
 namespace BggExt.XmlApi2;
@@ -90,7 +92,7 @@ public class Api(Downloader _downloader)
 
         return result;
     }
-    
+
     public async Task<ApiResult> GetCollection(string userId)
     {
         var result = _ProcessApiCall(await _CallApi($"/xmlapi2/collection?username={userId}&subtype=boardgame&brief=1"),
@@ -102,6 +104,25 @@ public class Api(Downloader _downloader)
             return await GetBoardGames(ids);
         }
 
+        return result;
+    }
+
+    // TODO: Change ApiResult to a generic with data type as the template parameter
+    public async Task<ApiResult> GetUser(string userId)
+    {
+        var result = _ProcessApiCall(await _CallApi($"/xmlapi2/user?name={userId}"), "user");
+        if (result.Status == ApiResult.OperationStatus.Success)
+        {
+            if (result.Xml!.GetAttributeValue("id").IsNullOrEmpty())
+            {
+                result.Errors.Add($"The user '{userId} was not found");
+            }
+            else
+            {
+                var user = new User(result.Xml!);
+                result.Data = user;
+            }
+        }
         return result;
     }
 }

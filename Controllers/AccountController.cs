@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using BggExt.Data;
 using BggExt.Models;
 using BggExt.Web;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters.Xml;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -15,32 +17,58 @@ namespace BggExt.Controllers;
 
 [ApiController]
 [Route("api/account")]
-public class AccountController(BoardGameDbContext _context) : ControllerBase
+public class AccountController(
+    BoardGameDbContext _context, XmlApi2.Api _api,
+    ILogger<AccountController> _logger) : ControllerBase
 {
     [HttpPost("register")]
     public async Task<IActionResult> Register(ApplicationUserRegistration userRegistration,
         [FromServices] SignInManager<ApplicationUser> signInManager,
         [FromServices] UserManager<ApplicationUser> userManager)
     {
+        if (await userManager.Users.Where(u => (u.Email != null) && u.Email.ToLower() == userRegistration.Email.ToLower()).CountAsync() != 0)
+        {
+            ModelState.AddModelError(nameof(userRegistration.Email), $"The email is already registered.");
+        }
+        if (await userManager.Users.Where(u => (u.UserName != null) && u.UserName.ToLower() == userRegistration.UserName.ToLower()).CountAsync() != 0)
+        {
+            ModelState.AddModelError(nameof(userRegistration.UserName), "The username is already registered.");
+        }
+        if (await _context.Libraries.Where(l => l.Id == userRegistration.BoardGameGeekUsername).CountAsync() != 0)
+        {
+            ModelState.AddModelError(nameof(userRegistration.BoardGameGeekUsername),
+                $"The BoardGameGeek username is already registered.");
+        }
         if (!ModelState.IsValid)
         {
-            return BadRequest();
+            return ValidationProblem();
         }
 
-        if (await userManager.Users.Where(u => u.Email.ToLower() == userRegistration.Email.ToLower()).CountAsync() != 0)
+        // Make call to BGG API and re-check model state
+        var bggUsernameResult = await _api.GetUser(userRegistration.BoardGameGeekUsername);
+        if (bggUsernameResult.Status == XmlApi2.ApiResult.OperationStatus.Error)
         {
-            return BadRequest($"The email '{userRegistration.Email}' is already registered.");
+            var errorListString = string.Join(", ", bggUsernameResult.Errors);
+            ModelState.AddModelError(nameof(userRegistration.BoardGameGeekUsername),
+            "A problem occurred while querying BoardGameGeek for username validation." +
+                $" Errors: [{errorListString}]");
         }
-        if (await _context.Libraries.Where(l => l.Id == userRegistration.LibraryId).CountAsync() != 0)
+        else if (bggUsernameResult.Status == XmlApi2.ApiResult.OperationStatus.Pending)
         {
-            return BadRequest($"The library '{userRegistration.LibraryId}' is already registered.");
+            ModelState.AddModelError(nameof(userRegistration.BoardGameGeekUsername),
+                "A problem occurred while querying BoardGameGeek for username validation." +
+                $" Please try again later. Message: {bggUsernameResult.Message}");
+        }
+        if (!ModelState.IsValid)
+        {
+            return ValidationProblem();
         }
 
         var user = new ApplicationUser()
         {
             Email = userRegistration.Email,
-            UserName = userRegistration.Email,
-            Library = new Library() { Id = userRegistration.LibraryId },
+            UserName = userRegistration.UserName,
+            Library = new Library() { Id = userRegistration.BoardGameGeekUsername },
             NormalizedEmail = userRegistration.Email.ToLower()
         };
 
@@ -56,13 +84,11 @@ public class AccountController(BoardGameDbContext _context) : ControllerBase
             await _context.SaveChangesAsync();
 
             await signInManager.SignInAsync(user, isPersistent: false);
-            return CreatedAtAction(nameof(Register), new { id = user.Id }, user);
+            return CreatedAtAction(nameof(Register), user);
         }
-        foreach (var error in result.Errors)
-        {
-            ModelState.AddModelError(string.Empty, error.Description);
-        }
-        return BadRequest();
+        _logger.LogError($"An error occurred while registering user '{userRegistration.UserName}' with email '{userRegistration.Email}'." +
+            $" Errors: [{string.Join(", ", result.Errors.Select(e => e.Description))}]");
+        return Problem(statusCode: StatusCodes.Status500InternalServerError);
     }
 
     [Authorize]
@@ -108,7 +134,7 @@ public class AccountController(BoardGameDbContext _context) : ControllerBase
 
     [Authorize]
     [HttpGet("details")]
-        public async Task<IActionResult> GetDetails(
+    public async Task<IActionResult> GetDetails(
             [FromServices] UserManager<ApplicationUser> userManager,
             [FromServices] RoleManager<IdentityRole> roleManager)
     {
