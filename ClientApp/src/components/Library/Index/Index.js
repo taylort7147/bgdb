@@ -16,7 +16,7 @@ export function Index() {
         })
             .then(response => response.json())
             .then(data => setLibraries(data))
-    }, []);
+    }, [token]);
 
     if (libraries == null) {
         return null;

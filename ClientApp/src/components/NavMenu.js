@@ -15,24 +15,23 @@ export function NavMenu() {
     };
 
     useEffect(() => {
-        setIsLoggedIn(token != undefined);
+        setIsLoggedIn(token !== undefined);
     }, [token]);
 
-    const getUserDetails = async () => {
-        return fetch(`/api/account/details`,
-            {
-                method: "GET",
-                headers: new Headers({
-                    'Authorization': `Bearer ${token?.accessToken}`
-                })
-            }).then(response => response.json());
-    };
 
     useEffect(() => {
         if (token != null) {
-            getUserDetails().then(details => {
-                setIsAdmin(details.roles.includes("Administrator"));
-            });
+            fetch(`/api/account/details`,
+                {
+                    method: "GET",
+                    headers: new Headers({
+                        'Authorization': `Bearer ${token?.accessToken}`
+                    })
+                })
+                .then(response => response.json())
+                .then(details => {
+                    setIsAdmin(details.roles.includes("Administrator"));
+                });
         } else {
             setIsAdmin(false);
         }

@@ -19,7 +19,7 @@ export function LibraryTable() {
         })
             .then(response => response.json())
             .then(data => setLibrary(data));
-    }, []);
+    }, [token, libraryId]);
 
     // Permission
     const [canEdit, setCanEdit] = useState();
@@ -32,7 +32,7 @@ export function LibraryTable() {
         })
             .then(response => response.json())
             .then(data => setCanEdit(data));
-    }, []);
+    }, [token, libraryId]);
 
 
     if (library == null) {

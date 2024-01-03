@@ -16,7 +16,7 @@ async function loginUser(credentials) {
 
 export default Login;
 export function Login() {
-    const { setToken, removeToken } = useContext(AppContext);
+    const { setToken } = useContext(AppContext);
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [error, setError] = useState([]);
@@ -25,7 +25,7 @@ export function Login() {
     const handleSubmit = async e => {
         e.preventDefault();
         var response = await loginUser({ email, password });
-        if (response.status == 200) {
+        if (response.status === 200) {
             var token = await response.json();
             if (token && token.accessToken) {
                 setToken(token);
@@ -36,7 +36,7 @@ export function Login() {
                 setError("An invalid token was issued from the server");
             }
         }
-        else if (response.status == 401) {
+        else if (response.status === 401) {
             setError("Incorrect email/password");
         }
         else {

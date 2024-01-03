@@ -6,7 +6,7 @@ function renderRange(a, b) {
     if (a != null) {
         var min = Math.min(a, b);
         var max = Math.max(a, b);
-        if (min == max) {
+        if (min === max) {
             return <span>{min}</span>;
         } else {
             return <span>{min}-{max}</span>
@@ -24,8 +24,7 @@ function renderLocation(game, canEdit, setLocation) {
 }
 
 function renderImage(id) {
-    
-   return <img src={`/api/asset/img/${id}`} />;
+   return <img src={`/api/asset/img/${id}`} alt="" />;
 }
 
 export function HeaderRow() {

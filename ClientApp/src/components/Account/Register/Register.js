@@ -39,7 +39,7 @@ export function Register() {
             password,
             passwordConfirm
         });
-        if (response.status == 201) {
+        if (response.status === 201) {
             navigate("/account/login");
         }
         var result = await response.json();
@@ -72,7 +72,7 @@ export function Register() {
 
                     <div className="mb-3">
                         <label>Confirm Password</label>
-                        <input className={`form-control ${(password == passwordConfirm) ? "check-mark-success" : ""}`}
+                        <input className={`form-control ${(password === passwordConfirm) ? "check-mark-success" : ""}`}
                             type="password" onChange={e => setPasswordConfirm(e.target.value)} />
                         {renderErrors(errors, "passwordConfirm")}
                     </div>

@@ -16,7 +16,7 @@ export function UserManagement() {
         })
             .then(response => response.json())
             .then(data => setUsers(data));
-    }, []);
+    }, [token]);
     return (
         <div className="user-management-wrapper">
             <h1>User Management</h1>

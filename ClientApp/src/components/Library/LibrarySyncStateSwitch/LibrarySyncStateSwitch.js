@@ -16,7 +16,7 @@ export function LibrarySyncStateSwitch({ libraryId }) {
         })
             .then(response => response.json())
             .then(data => setIsChecked(data.isEnabled))
-    }, []);
+    }, [token, libraryId]);
 
     var handleChange = checked => {
         // Assume the operation will be successful

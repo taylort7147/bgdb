@@ -72,7 +72,7 @@ export function UserRoleConfiguration({ userId }) {
 
     useEffect(() => {
         getUserRoles(userId).then(data => setUserRoles(data));
-    }, []);
+    }, [userId]);
 
     useEffect(() => {
         updateRoleStates(allRoles, userRoles);
@@ -90,7 +90,7 @@ export function UserRoleConfiguration({ userId }) {
         // Make the API call to update the role
         var method = checked ? addRole : removeRole;
         var response = await method(userId, role);
-        if (response.status != 200) {
+        if (response.status !== 200) {
             console.error(response);
         }
 

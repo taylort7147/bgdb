@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { AppContext } from "../../../AppContext";
 
 function logout(accessToken) {
@@ -23,5 +23,5 @@ export function Logout() {
                 window.location.href = "/";
             });
 
-    }, []);
+    }, [token, removeToken]);
 }
