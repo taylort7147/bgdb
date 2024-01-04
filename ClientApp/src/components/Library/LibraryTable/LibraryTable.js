@@ -3,6 +3,7 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import { AppContext } from '../../../AppContext';
 import * as BoardGameTable from '../BoardGameTable/BoardGameTable';
 import { BoardGameFilterCollapse } from '../BoardGameFilter/BoardGameFilter';
+import { BoardGameCard } from '../BoardGameCard/BoardGameCard';
 
 function filterLibrary(library, params) {
     var result = library.filter(libraryData => {
@@ -62,19 +63,12 @@ export function LibraryTable() {
         return null;
     }
 
-    return (<>
+    return <>
         <BoardGameFilterCollapse />
-        <table className="table table-striped board-game-table">
-            <thead>
-                <BoardGameTable.HeaderRow />
-            </thead>
-            <tbody>
-                {filteredLibrary?.map((data, i) => {
-                    return <BoardGameTable.DataRow key={i} game={data.boardGame} canEdit={canEdit} />
-                })}
-            </tbody>
-
-        </table>
-    </>
-    );
+        {filteredLibrary?.map((data, i) => {
+            return <div key={i} className="mb-3">
+                <BoardGameCard game={data.boardGame} />
+            </div>
+        })}
+    </>;
 };
