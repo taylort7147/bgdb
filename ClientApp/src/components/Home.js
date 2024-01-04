@@ -1,4 +1,6 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import { Card, CardBody } from 'reactstrap';
 
 export class Home extends Component {
     static displayName = Home.name;
@@ -6,30 +8,30 @@ export class Home extends Component {
     render() {
         return (
             <div>
-                <h1>Hello, world!</h1>
-                <p>Welcome to your new single-page application, built with:</p>
-                <ul>
-                    <li><a href='https://get.asp.net/'>ASP.NET Core</a> and <a
-                        href='https://msdn.microsoft.com/en-us/library/67ef8sbd.aspx'>C#</a> for cross-platform
-                        server-side code
-                    </li>
-                    <li><a href='https://facebook.github.io/react/'>React</a> for client-side code</li>
-                    <li><a href='http://getbootstrap.com/'>Bootstrap</a> for layout and styling</li>
-                </ul>
-                <p>To help you get started, we have also set up:</p>
-                <ul>
-                    <li><strong>Development server integration</strong>. In development mode, the development server
-                        from <code>create-react-app</code> runs in the background automatically, so your client-side
-                        resources are dynamically built on demand and the page refreshes when you modify any file.
-                    </li>
-                    <li><strong>Efficient production builds</strong>. In production mode, development-time features are
-                        disabled, and your <code>dotnet publish</code> configuration produces minified, efficiently
-                        bundled JavaScript files.
-                    </li>
-                </ul>
-                <p>The <code>ClientApp</code> subdirectory is a standard React application based on
-                    the <code>create-react-app</code> template. If you open a command prompt in that directory, you can
-                    run <code>npm</code> commands such as <code>npm test</code> or <code>npm install</code>.</p>
+                <Card>
+                    <CardBody>
+                        <h1 className="card-title">BoardGameDB</h1>
+
+                        <p className="card-text">
+                            BoardGameDB is an extension to <a href="https://boardgamegeek.com">BoardGameGeek.com</a> that allows
+                            you to attach extra data to your library games and easily search and filter by various game details.
+                        </p>
+
+                        <h5 className="card-title">Getting Started</h5>
+
+                        <p className="card-text">
+                            <ul>
+                                <li>
+                                    <Link to="/account/_register">Register</Link> to add your library.
+                                    Contact the administrator after registering to enable syncing.
+                                </li>
+                                <li>
+                                    View others' <Link to={"/library"}>libraries</Link>.
+                                </li>
+                            </ul>
+                        </p>
+                    </CardBody>
+                </Card>
             </div>
         );
     }
