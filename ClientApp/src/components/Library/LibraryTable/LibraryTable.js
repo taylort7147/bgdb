@@ -49,12 +49,20 @@ export function LibraryTable() {
     // }, [token, libraryId]);
 
     // Filter
-    const [filteredLibrary, setFilteredLibrary] = useState();
+    const getSortKey = data => data.boardGame.name;
+    const compareMethod = (a, b) => {
+        const keyA = getSortKey(a);
+        const keyB = getSortKey(b);
+        if(keyA < keyB) return -1;
+        if(keyA > keyB) return 1;
+        return 0;
+    }
+    const [filteredLibrary, setFilteredLibrary] = useState([]);
     useEffect(() => {
         if (library) {
-            setFilteredLibrary(filterLibrary(library.libraryData, searchParams));
+            setFilteredLibrary(filterLibrary(library.libraryData, searchParams).sort(compareMethod));
         } else {
-            setFilteredLibrary(library);
+            setFilteredLibrary();
         }
     }, [library, searchParams]);
 
