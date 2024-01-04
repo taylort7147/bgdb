@@ -5,7 +5,7 @@ import './NavMenu.css';
 import { AppContext } from '../../AppContext';
 
 export function NavMenu() {
-    const [collapsed, setCollapsed] = useState();
+    const [collapsed, setCollapsed] = useState(true);
     const [isLoggedIn, setIsLoggedIn] = useState();
     const [isAdmin, setIsAdmin] = useState();
     const { token } = useContext(AppContext);
@@ -15,7 +15,7 @@ export function NavMenu() {
     };
 
     useEffect(() => {
-        setIsLoggedIn(token !== undefined);
+        setIsLoggedIn(token != null);
     }, [token]);
 
 
