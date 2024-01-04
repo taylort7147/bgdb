@@ -36,8 +36,8 @@ export function BoardGameCard({ game }) {
 
                     {/* Thumbnail */}
                     <div className="col-auto">
-                        <div className="bgdb-card-thumbnail-container rounded-end">
-                            <img className="img-fluid rounded-end bgdb-card-thumbnail" src={`/api/asset/img/${game.thumbnailId}`} alt="" />
+                        <div className="bgdb-card-thumbnail-container ">
+                            <img className="img-fluid bgdb-card-thumbnail" src={`/api/asset/img/${game.thumbnailId}`} alt="" />
                         </div>
                     </div>
 
