@@ -1,5 +1,5 @@
 /* Override defaults */
-$primary: #4a3184;
+$primary: #2d1e5c;
 $secondary: #dadada;
 
 /* Import the necessary Bootstrap files */
@@ -14,7 +14,7 @@ header {
 }
 
 body {
-    background: tint-color($primary, 90%);
+    background: tint-color($primary, 85%);
 }
 
 .bgdb-btn-filter {
@@ -22,35 +22,32 @@ body {
     margin-right: 0;
 }
 
-.bgdb-card-thumbnail-container {
-    width: 150px;
+.bgdb-card-thumbnail {
+    display: block;
     height: 100%;
-    margin: 0;
-    background-color: black;
-    display: flex;
-    justify-content: center;
-    overflow: hidden;
-    background-color: $primary;
+    width: auto;
 }
 
-.bgdb-filter-icon{
-    width: 1rem;
-    height: 1rem;
+.bgdb-card-thumbnail-container {
+    height: 100%;
+    max-height: 150px;
+}
+
+.bgdb-icon {
+    width: 1.5rem;
+    height: 1.5rem;
 }
 
 .bgdb-summary {
     background-color: $primary;
-    width: 130px;
-    padding: 10px;
     align-content: center;
+    overflow: hidden;
 }
 
 .bgdb-summary * {
-    margin-left: auto;
-    margin-right: 0;
-    font-size: 20px;
-    font-weight: bold;
+    font-size: 1.1rem;
     color: white;
+    text-align: left;
 }
 
 .bgdb-weight-1 {

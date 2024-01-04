@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { AppContext } from '../../../AppContext';
-import * as BoardGameTable from '../BoardGameTable/BoardGameTable';
 import { BoardGameFilterCollapse } from '../BoardGameFilter/BoardGameFilter';
 import { BoardGameCard } from '../BoardGameCard/BoardGameCard';
 
@@ -36,18 +35,18 @@ export function LibraryTable() {
             .then(data => setLibrary(data));
     }, [token, libraryId]);
 
-    // Permission
-    const [canEdit, setCanEdit] = useState();
-    useEffect(() => {
-        fetch(`api/library/canedit?id=${libraryId}`, {
-            method: 'GET',
-            headers: new Headers({
-                'Authorization': `Bearer ${token?.accessToken}`
-            }),
-        })
-            .then(response => response.json())
-            .then(data => setCanEdit(data));
-    }, [token, libraryId]);
+    // // Permission
+    // const [canEdit, setCanEdit] = useState();
+    // useEffect(() => {
+    //     fetch(`api/library/canedit?id=${libraryId}`, {
+    //         method: 'GET',
+    //         headers: new Headers({
+    //             'Authorization': `Bearer ${token?.accessToken}`
+    //         }),
+    //     })
+    //         .then(response => response.json())
+    //         .then(data => setCanEdit(data));
+    // }, [token, libraryId]);
 
     // Filter
     const [filteredLibrary, setFilteredLibrary] = useState();

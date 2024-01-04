@@ -6,9 +6,9 @@ function renderRange(a, b) {
         var min = Math.min(a, b);
         var max = Math.max(a, b);
         if (min === max) {
-            return <span>{min}</span>;
+            return <>{min}</>;
         } else {
-            return <span>{min}-{max}</span>
+            return <>{min}-{max}</>
         }
     }
 };
@@ -24,60 +24,66 @@ function renderWeight(weight, decimalPlaces) {
 export function BoardGameCard({ game }) {
     return (
         <div className="card mb-3">
-            <div className="row g-0">
-                {/* Card body */}
-                <div className="col">
-                    <div className="card-body">
-                        <h3 className="card-title">{game.name}</h3>
-                        <p className="card-text">Some other text</p>
-                        <p className="card-text"><small className="text-body-secondary">Some other text</small></p>
+            {/* Card body */}
+            <div className="card-body">
+                <h3 className="card-title">{game.name}</h3>
+                <p className="card-text"><small className="text-body-secondary">Some other text</small></p>
+            </div>
+
+            {/* Game info */}
+            <div className="rounded-bottom bgdb-summary d-grid">
+                <div className="row g-0 justify-content-start text-start">
+
+                    {/* Thumbnail */}
+                    <div className="col-auto">
+                        <div className="bgdb-card-thumbnail-container rounded-end">
+                            <img className="img-fluid rounded-end bgdb-card-thumbnail" src={`/api/asset/img/${game.thumbnailId}`} alt="" />
+                        </div>
                     </div>
-                </div>
 
-                {/* Game info */}
-                <div className="col-auto">
-                    <div className="row g-0">
-                        <div className="col-auto bgdb-summary d-grid">
-                            <div className="row g-0">
-                                <div className="col-auto">
-                                    <span>2-7</span>
-                                </div>
-                                <div className="col-auto ms-1">
-                                    <img src="/img/icon/meeple.png" className="bgdb-small-icon" />
-                                </div>
+                    {/* Details */}
+                    <div className="col-auto p-2 d-grid text-nowrap">
+
+                        {/* Players */}
+                        <div className="row row-cols-2 g-0">
+                            <div className="col-auto">
+                                <img src="/img/icon/meeple.png" className="bgdb-icon" alt="" />
                             </div>
-                            <div className="row g-0">
-                                <div className="col-auto">
-                                    <span>{renderRange(game.minPlayTimeMinutes, game.maxPlayTimeMinutes)}</span>
-                                </div>
-                                <div className="col-auto ms-1">
-                                    <img src="/img/icon/clock.png" className="bgdb-small-icon" />
-                                </div>
-                            </div>
-                            <div className="row g-0">
-                                <div className="col-auto">
-                                    {renderWeight(game.averageWeight, 2)}
-                                </div>
-                                <div className="col-auto ms-1">
-                                    <img src="/img/icon/think.png" className="bgdb-small-icon" />
-                                </div>
-                            </div>
-                            <div className="row g-0">
-                                <div className="col-auto">
-                                    <span>A7</span>
-                                </div>
-                                <div className="col-auto ms-1">
-                                    <img src="/img/icon/location.png" className="bgdb-small-icon" />
-                                </div>
+                            <div className="col ps-2 my-auto">
+                                <span>{renderRange(game.minPlayers, game.maxPlayers)}</span>
                             </div>
                         </div>
 
-                        {/* Thumbnail */}
-                        <div className="col-auto">
-                            <div className="bgdb-card-thumbnail-container rounded-end">
-                                <img className="img-fluid rounded-end bgdb-card-thumbnail" src={`/api/asset/img/${game.thumbnailId}`} alt="" />
+                        {/* Play time */}
+                        <div className="row row-cols-2 g-0">
+                            <div className="col-auto">
+                                <img src="/img/icon/clock.png" className="bgdb-icon" alt="" />
+                            </div>
+                            <div className="col ps-2 my-auto">
+                                <span>{renderRange(game.minPlayTimeMinutes, game.maxPlayTimeMinutes)}</span>
                             </div>
                         </div>
+
+                        {/* Complexity */}
+                        <div className="row row-cols-2 g-0">
+                            <div className="col-auto">
+                                <img src="/img/icon/think.png" className="bgdb-icon" alt="" />
+                            </div>
+                            <div className="col ps-2 my-auto">
+                                {renderWeight(game.averageWeight, 2)}
+                            </div>
+                        </div>
+
+                        {/* Location */}
+                        <div className="row row-cols-2 g-0">
+                            <div className="col-auto">
+                                <img src="/img/icon/location.png" className="bgdb-icon" alt="" />
+                            </div>
+                            <div className="col ps-2 my-auto">
+                                <span>A7</span>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
