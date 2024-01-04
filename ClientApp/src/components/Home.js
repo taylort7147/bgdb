@@ -19,17 +19,20 @@ export class Home extends Component {
 
                         <h5 className="card-title">Getting Started</h5>
 
-                        <p className="card-text">
-                            <ul>
-                                <li>
-                                    <Link to="/account/_register">Register</Link> to add your library.
-                                    Contact the administrator after registering to enable syncing.
-                                </li>
-                                <li>
-                                    View others' <Link to={"/library"}>libraries</Link>.
-                                </li>
-                            </ul>
-                        </p>
+                        <ul className="card-text">
+                            <li>
+                                <Link to="/account/_register">Register</Link> to add your library.
+                                <ul>
+                                    <li>
+                                        Contact the administrator after registering to enable syncing.
+                                    </li>
+                                </ul>
+
+                            </li>
+                            <li>
+                                View others' <Link to={"/library"}>libraries</Link>.
+                            </li>
+                        </ul>
                     </CardBody>
                 </Card>
             </div>
