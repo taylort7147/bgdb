@@ -38,6 +38,45 @@ body {
     height: 1.5rem;
 }
 
+.bgdb-label.input-group-text {
+    background-color: tint-color($primary, 80%);
+}
+
+.bgdb-slider.multi-range-slider {
+    border: none;
+    box-shadow: none;
+}
+
+.bgdb-slider.multi-range-slider .bar-inner {
+    background-color: tint-color($primary, 30%);
+    border: none;
+    box-shadow: none;
+    padding: 4px 0px;
+}
+
+.bgdb-slider.multi-range-slider .bar-left,
+.bgdb-slider.multi-range-slider .bar-right {
+    border: none;
+    background-color: tint-color($primary, 70%);
+    box-shadow: none;
+    padding: 1px 0px;
+    margin: 3px 0px;
+}
+
+.bgdb-slider.multi-range-slider .thumb {
+    background-color: $primary;
+}
+
+.bgdb-slider.multi-range-slider .thumb::before {
+    border: none;
+    box-shadow: none;
+    margin: -6px -12px;
+}
+
+.bgdb-slider.multi-range-slider .thumb .caption {
+    display: none !important;
+}
+
 .bgdb-summary {
     background-color: $primary;
     align-content: center;

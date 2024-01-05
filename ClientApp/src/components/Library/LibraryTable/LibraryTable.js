@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { AppContext } from '../../../AppContext';
-import { BoardGameFilterCollapse } from '../BoardGameFilter/BoardGameFilter';
+import * as BoardGameFilter from '../BoardGameFilter/BoardGameFilter';
 import { BoardGameCard } from '../BoardGameCard/BoardGameCard';
 
 function filterLibrary(library, params) {
@@ -21,6 +21,7 @@ export function LibraryTable() {
     var { libraryId } = useParams();
     const [searchParams] = useSearchParams();
     const { token } = useContext(AppContext);
+    const [filter, setFilter] = useState(new BoardGameFilter.FilterData(searchParams));
 
     // Library
     const [library, setLibrary] = useState();
@@ -49,29 +50,30 @@ export function LibraryTable() {
     // }, [token, libraryId]);
 
     // Filter
+    const [filteredLibrary, setFilteredLibrary] = useState([]);
     const getSortKey = data => data.boardGame.name;
-    const compareMethod = (a, b) => {
+    const compareMethod = useCallback((a, b) => {
         const keyA = getSortKey(a);
         const keyB = getSortKey(b);
-        if(keyA < keyB) return -1;
-        if(keyA > keyB) return 1;
+        if (keyA < keyB) return -1;
+        if (keyA > keyB) return 1;
         return 0;
-    }
-    const [filteredLibrary, setFilteredLibrary] = useState([]);
+    }, []);
+
     useEffect(() => {
         if (library) {
             setFilteredLibrary(filterLibrary(library.libraryData, searchParams).sort(compareMethod));
         } else {
             setFilteredLibrary();
         }
-    }, [library, searchParams]);
+    }, [library, searchParams, compareMethod]);
 
     if (library == null) {
         return null;
     }
 
     return <>
-        <BoardGameFilterCollapse />
+        <BoardGameFilter.FilterCollapse filter={filter} setFilter={setFilter} />
         {filteredLibrary?.map((data, i) => {
             return <div key={i} className="mb-3">
                 <BoardGameCard game={data.boardGame} />
