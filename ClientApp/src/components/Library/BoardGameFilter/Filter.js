@@ -17,7 +17,9 @@ export function Filter({ filter, setFilter }) {
                 newSearchParams.set(paramName, paramValue);
             }
         });
-        setSearchParams(newSearchParams);
+        if (searchParams != newSearchParams) {
+            setSearchParams(newSearchParams);
+        }
     }, [searchParams, setSearchParams]);
 
     useEffect(() => {
@@ -28,18 +30,23 @@ export function Filter({ filter, setFilter }) {
         ]);
     }, [filter, updateSearchParams]);
 
+    const updateFilter = (newFilter) => {
+        if (!filter.equals(newFilter)) {
+            setFilter(newFilter);
+        }
+    }
+
     const setPlayers = value => {
-        console.log(`setPlayers(${value})`);
         var newFilter = filter.clone();
         newFilter.setPlayers(value);
-        setFilter(newFilter);
+        updateFilter(newFilter);
     }
 
     const setWeightRange = (min, max) => {
         var newFilter = filter.clone();
         newFilter.setMinWeight(min);
         newFilter.setMaxWeight(max);
-        setFilter(newFilter);
+        updateFilter(newFilter);
     };
 
     return (

@@ -1,3 +1,5 @@
+import Filter from "./Filter";
+
 export class FilterData {
     constructor(searchParams) {
         this.players = searchParams?.get("players");
@@ -11,6 +13,12 @@ export class FilterData {
         filter.setMinWeight(this.minWeight);
         filter.setMaxWeight(this.maxWeight);
         return filter;
+    }
+
+    equals(other){
+        return this.players == other.players
+            && this.minWeight == other.minWeight
+            && this.maxWeight == other.maxWeight;
     }
 
     isDefault() {
