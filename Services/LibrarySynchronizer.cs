@@ -67,7 +67,7 @@ public class LibrarySynchronizer(
                     {
                         model = new BoardGame();
                     }
-
+                    
                     model.Name = boardGame.Name;
                     model.Id = boardGame.Id;
                     model.YearPublished = boardGame.YearPublished;
@@ -90,7 +90,44 @@ public class LibrarySynchronizer(
                         model.ThumbnailId = (await _imageStore.StoreImage(boardGame.Thumbnail)).Id;
                     }
 
-                    // TODO: The rest of the fields (Mechanics, Categories, Families)
+                    if (boardGame.Mechanics != null)
+                    {
+                        model.Mechanics = boardGame.Mechanics.Select(m => new Mechanic { Id = m.Id, Name = m.Value }).ToList();
+                        foreach (var mechanic in model.Mechanics)
+                        {
+                            if(context.Mechanics.Contains(mechanic))
+                            {
+                                _logger.LogInformation($"Mechanic added: [{mechanic.Id}] {mechanic.Name}");
+                                context.Mechanics.Add(mechanic);
+                            }
+                        }
+                    }
+
+                    if (boardGame.Categories != null)
+                    {
+                        model.Categories = boardGame.Categories.Select(c => new Category { Id = c.Id, Name = c.Value }).ToList();
+                        foreach (var category in model.Categories)
+                        {
+                            if(context.Categories.Contains(category))
+                            {
+                                _logger.LogInformation($"Category added: [{category.Id}] {category.Name}");
+                                context.Categories.Add(category);
+                            }
+                        }
+                    }
+
+                    if (boardGame.Families != null)
+                    {
+                        model.Families = boardGame.Families.Select(f => new Family { Id = f.Id, Name = f.Value }).ToList();
+                        foreach (var family in model.Families)
+                        {
+                            if(context.Families.Contains(family))
+                            {
+                                _logger.LogInformation($"Family added: [{family.Id}] {family.Name}");
+                                context.Families.Add(family);
+                            }
+                        }
+                    }
 
                     if (isNew)
                     {
