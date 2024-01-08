@@ -95,7 +95,7 @@ public class Api(Downloader _downloader)
 
     public async Task<ApiResult> GetCollection(string userId)
     {
-        var result = _ProcessApiCall(await _CallApi($"/xmlapi2/collection?username={userId}&subtype=boardgame&brief=1"),
+        var result = _ProcessApiCall(await _CallApi($"/xmlapi2/collection?username={userId}&subtype=boardgame&brief=1&own=1"),
             "items");
         if (result.Status == ApiResult.OperationStatus.Success)
         {
