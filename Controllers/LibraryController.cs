@@ -1,5 +1,6 @@
 using BggExt.Data;
 using BggExt.Models;
+using BggExt.Models.Dto;
 using BggExt.Services;
 using BggExt.Web;
 using Microsoft.AspNetCore.Authorization;
@@ -33,7 +34,63 @@ public class LibraryController(BoardGameDbContext _context) : ControllerBase
         {
             return NotFound($"Library '{id}' was not found");
         }
-        return CreatedAtAction(nameof(GetLibraryAsync), library);
+        var dto = new LibraryDto();
+        dto.LibraryData = library.LibraryData.Select(d => new BoardGameLibraryDataDto
+        {
+            Id = d.Id,
+            LibraryId = d.LibraryId,
+            Location = d.Location,
+            BoardGame = new BoardGameDto { 
+                Id = d.BoardGameId,
+                Name = d.BoardGame.Name,
+                Description = d.BoardGame.Description,
+                MinPlayers = d.BoardGame.MinPlayers,
+                MaxPlayers = d.BoardGame.MaxPlayers,
+                MinPlayTimeMinutes = d.BoardGame.MinPlayTimeMinutes,
+                MaxPlayTimeMinutes = d.BoardGame.MaxPlayTimeMinutes,
+                PlayingTimeMinutes = d.BoardGame.PlayingTimeMinutes,
+                MinAge = d.BoardGame.MinAge,
+                AverageWeight = d.BoardGame.AverageWeight,
+                YearPublished = d.BoardGame.YearPublished,
+                ImageId = d.BoardGame.ImageId,
+                ThumbnailId = d.BoardGame.ThumbnailId,
+                Mechanics = d.BoardGame.Mechanics!.Select(m => m.Name).ToList(),
+                Categories = d.BoardGame.Categories!.Select(c => c.Name).ToList(),
+                Families = d.BoardGame.Families!.Select(f => f.Name).ToList()
+            }
+        }).ToList();
+        return CreatedAtAction(nameof(GetLibraryAsync), dto);
+    }
+
+    public class LibraryDataEdit
+    {
+        public string? Location { get; set; }
+    }
+
+    [Authorize]
+    [HttpPost("library/data/edit/{id}")]
+    public async Task<IActionResult> EditGame(string id,
+        [FromBody] LibraryDataEdit editData,
+        [FromServices] UserManager<ApplicationUser> userManager)
+    {
+        var libraryData = await _context.LibraryData
+            .Include(d => d.Library)
+            .ThenInclude(l => l.Owner)
+            .FirstOrDefaultAsync();
+        if (libraryData == null)
+        {
+            return NotFound();
+        }
+
+        if (!await DoesUserHaveEditPermission(userManager, libraryData.Library))
+        {
+            return Unauthorized("Only the owner of this library or an admin may use this API.");
+        }
+
+        _context.LibraryData.Attach(libraryData);
+        libraryData.Location = editData.Location;
+        await _context.SaveChangesAsync();
+        return Ok();
     }
 
     private async Task<bool> DoesUserHaveEditPermission(UserManager<ApplicationUser> userManager, Library library)
@@ -59,7 +116,14 @@ public class LibraryController(BoardGameDbContext _context) : ControllerBase
         {
             library = library
                 .Include(l => l.LibraryData)
-                .ThenInclude(d => d.BoardGame);
+                    .ThenInclude(d => d.BoardGame)
+                        .ThenInclude(g => g.Mechanics)
+                .Include(l => l.LibraryData)
+                    .ThenInclude(d => d.BoardGame)
+                        .ThenInclude(g => g.Categories)
+                .Include(l => l.LibraryData)
+                    .ThenInclude(d => d.BoardGame)
+                        .ThenInclude(g => g.Families);
         }
         return await library.FirstOrDefaultAsync();
     }

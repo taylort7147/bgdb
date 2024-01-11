@@ -2,13 +2,12 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace BggExt.Models;
+namespace BggExt.Models.Dto;
 
-public class BoardGame
+public class BoardGameDto
 {
     public int Id { get; set; }
 
-    [Required]
     public string Name { get; set; } = default!;
 
     public string? Description { get; set; }
@@ -29,16 +28,14 @@ public class BoardGame
 
     public double AverageWeight { get; set; }
 
-    public virtual IList<Mechanic>? Mechanics { get; set; }
+    public IList<string>? Mechanics { get; set; }
 
-    public virtual IList<Category>? Categories { get; set; }
+    public IList<string>? Categories { get; set; }
 
-    public virtual IList<Family>? Families { get; set; }
+    public IList<string>? Families { get; set; }
 
     public int ThumbnailId { get; set; }
-    public virtual Image? Thumbnail { get; set; }
 
     public int ImageId { get; set; }
-    public virtual Image? Image { get; set; }
     
 }

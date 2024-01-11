@@ -9,6 +9,10 @@ public class BoardGameLibraryData
 
     public string? Location { get; set; }
 
+    public virtual int BoardGameId { get; set; }
+
+    public virtual string LibraryId { get; set; } = default!;
+
     public virtual BoardGame BoardGame { get; set; } = default!;
 
     public virtual Library Library { get; set; } = default!;
