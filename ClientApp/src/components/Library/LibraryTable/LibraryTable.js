@@ -9,6 +9,15 @@ function getBoardGame(item){
     return item.boardGame;
 }
 
+function getLibrary(token, libraryId, includeGameProperties){
+    return fetch(`api/library/${libraryId}?includeGames=true&includeGameProperties=${includeGameProperties}`, {
+        method: 'GET',
+        headers: new Headers({
+            'Authorization': `Bearer ${token?.accessToken}`
+        }),
+    });
+}
+
 export default LibraryTable;
 export function LibraryTable() {
     var { libraryId } = useParams();
@@ -17,14 +26,14 @@ export function LibraryTable() {
     // Library
     const [library, setLibrary] = useState();
     useEffect(() => {
-        fetch(`api/library/${libraryId}?includeGames=true`, {
-            method: 'GET',
-            headers: new Headers({
-                'Authorization': `Bearer ${token?.accessToken}`
-            }),
-        })
+        getLibrary(token, libraryId, false)
             .then(response => response.json())
-            .then(data => setLibrary(data));
+            .then(data => {
+                setLibrary(data);
+                getLibrary(token, libraryId, true)
+                    .then(response => response.json())
+                    .then(data => setLibrary(data));
+            });
     }, [token, libraryId]);
 
     // // Permission

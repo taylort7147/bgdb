@@ -27,9 +27,9 @@ public class LibraryController(BoardGameDbContext _context) : ControllerBase
 
     [AllowAnonymous]
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetLibraryAsync(string id, bool includeGames)
+    public async Task<IActionResult> GetLibraryAsync(string id, bool includeGames = false, bool includeGameProperties = false)
     {
-        var library = await GetLibraryInternalAsync(id, includeGames);
+        var library = await GetLibraryInternalAsync(id, includeGames, includeGameProperties);
         if (library == null)
         {
             return NotFound($"Library '{id}' was not found");
@@ -40,7 +40,8 @@ public class LibraryController(BoardGameDbContext _context) : ControllerBase
             Id = d.Id,
             LibraryId = d.LibraryId,
             Location = d.Location,
-            BoardGame = new BoardGameDto { 
+            BoardGame = new BoardGameDto
+            {
                 Id = d.BoardGameId,
                 Name = d.BoardGame.Name,
                 Description = d.BoardGame.Description,
@@ -109,21 +110,32 @@ public class LibraryController(BoardGameDbContext _context) : ControllerBase
         return isOwner || isAdmin;
     }
 
-    private async Task<Library?> GetLibraryInternalAsync(string id, bool includeGames)
+    private async Task<Library?> GetLibraryInternalAsync(string id, 
+        bool includeGames = false, 
+        bool includeGameProperties = false)
     {
         var library = _context.Libraries.Where(l => l.Id.ToLower() == id.ToLower());
         if (includeGames)
         {
-            library = library
-                .Include(l => l.LibraryData)
-                    .ThenInclude(d => d.BoardGame)
-                        .ThenInclude(g => g.Mechanics)
-                .Include(l => l.LibraryData)
-                    .ThenInclude(d => d.BoardGame)
-                        .ThenInclude(g => g.Categories)
-                .Include(l => l.LibraryData)
-                    .ThenInclude(d => d.BoardGame)
-                        .ThenInclude(g => g.Families);
+            if (includeGameProperties)
+            {
+                library = library
+                    .Include(l => l.LibraryData)
+                        .ThenInclude(d => d.BoardGame)
+                            .ThenInclude(g => g.Mechanics)
+                    .Include(l => l.LibraryData)
+                        .ThenInclude(d => d.BoardGame)
+                            .ThenInclude(g => g.Categories)
+                    .Include(l => l.LibraryData)
+                        .ThenInclude(d => d.BoardGame)
+                            .ThenInclude(g => g.Families);
+            }
+            else
+            {
+                library = library
+                    .Include(l => l.LibraryData)
+                        .ThenInclude(d => d.BoardGame);
+            }
         }
         return await library.FirstOrDefaultAsync();
     }
@@ -132,7 +144,7 @@ public class LibraryController(BoardGameDbContext _context) : ControllerBase
     [HttpGet("canedit")]
     public async Task<IActionResult> CanEditAsync(string id, [FromServices] UserManager<ApplicationUser> userManager)
     {
-        var library = await GetLibraryInternalAsync(id, includeGames: false);
+        var library = await GetLibraryInternalAsync(id);
         if (library == null)
         {
             return BadRequest($"Library '{id}' was not found");
@@ -148,7 +160,7 @@ public class LibraryController(BoardGameDbContext _context) : ControllerBase
         [FromBody] bool isEnabled,
         [FromServices] ISynchronizationJobQueue jobQueue)
     {
-        var library = await GetLibraryInternalAsync(id, false);
+        var library = await GetLibraryInternalAsync(id);
         if (library == null)
         {
             return BadRequest($"Library '{id}' was not found");
@@ -170,7 +182,7 @@ public class LibraryController(BoardGameDbContext _context) : ControllerBase
         [FromServices] UserManager<ApplicationUser> userManager,
         [FromServices] ISynchronizationJobQueue jobQueue)
     {
-        var library = await GetLibraryInternalAsync(id, includeGames: false);
+        var library = await GetLibraryInternalAsync(id);
         if (library == null)
         {
             return BadRequest($"Library '{id}' does not exist.");

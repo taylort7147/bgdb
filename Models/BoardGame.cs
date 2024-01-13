@@ -29,11 +29,11 @@ public class BoardGame
 
     public double AverageWeight { get; set; }
 
-    public virtual IList<Mechanic>? Mechanics { get; set; }
+    public virtual IList<Mechanic>? Mechanics { get; set; } = new List<Mechanic>();
 
-    public virtual IList<Category>? Categories { get; set; }
+    public virtual IList<Category>? Categories { get; set; } = new List<Category>();
 
-    public virtual IList<Family>? Families { get; set; }
+    public virtual IList<Family>? Families { get; set; } = new List<Family>();
 
     public int ThumbnailId { get; set; }
     public virtual Image? Thumbnail { get; set; }
