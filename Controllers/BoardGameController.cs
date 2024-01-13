@@ -2,6 +2,7 @@ using BggExt.Data;
 using BggExt.Models;
 using BggExt.Web;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -47,14 +48,12 @@ public class BoardGameController(BoardGameDbContext _context) : ControllerBase
 
     [HttpGet("{id}")]
     [Authorize]
-    public async Task<IActionResult> GetGame(int id)
+    public async Task<IActionResult> GetGameAsync(int id)
     {
         var game = await _context.BoardGames
             .Include(b => b.Mechanics)
             .Include(b => b.Categories)
             .Include(b => b.Families)
-            .Include(b => b.Image)
-            .Include(b => b.Thumbnail)
             .Where(b => b.Id == id)
             .FirstOrDefaultAsync();
         
@@ -63,6 +62,30 @@ public class BoardGameController(BoardGameDbContext _context) : ControllerBase
             return NotFound();
         }
 
-        return CreatedAtAction(nameof(GetGame), game);
+        return new OkObjectResult(game);
+    }
+
+    [HttpGet("mechanics")]
+    [AllowAnonymous]
+    public async Task<IList<Mechanic>> GetMechanicsAsync()
+    {
+        var mechanics = await _context.Mechanics.OrderBy(m => m.Name).ToListAsync();
+        return mechanics;
+    }
+
+    [HttpGet("categories")]
+    [AllowAnonymous]
+    public async Task<IList<Category>> GetCategoriesAsync()
+    {
+        var categories = await _context.Categories.OrderBy(c => c.Name).ToListAsync();
+        return categories;
+    }
+
+    [HttpGet("families")]
+    [AllowAnonymous]
+    public async Task<IList<Family>> GetFamiliesAsync()
+    {
+        var families = await _context.Families.OrderBy(f => f.Name).ToListAsync();
+        return families;
     }
 }
