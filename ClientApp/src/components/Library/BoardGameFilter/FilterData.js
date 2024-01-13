@@ -1,59 +1,50 @@
-import Filter from "./Filter";
-
 export class FilterData {
-    constructor(searchParams) {
-        this.players = searchParams?.get("players");
-        this.minWeight = searchParams?.get("minWeight");
-        this.maxWeight = searchParams?.get("maxWeight");
+    constructor() {
+        this.criteria = new Map();
     }
 
     clone() {
         var filter = new FilterData();
-        filter.setPlayers(this.players);
-        filter.setMinWeight(this.minWeight);
-        filter.setMaxWeight(this.maxWeight);
+        filter.criteria = new Map();
+        this.criteria.forEach((criterion, name) => filter.criteria.set(name, criterion.clone()));
         return filter;
     }
 
-    equals(other){
-        return this.players == other.players
-            && this.minWeight == other.minWeight
-            && this.maxWeight == other.maxWeight;
+    equals(other) {
+        const mapsAreEqual = (m1, m2) => m1.size === m2.size && Array.from(m1.keys()).every(key => m1.get(key) === m2.get(key));
+        return mapsAreEqual(this.criteria, other.criteria);
+    }
+
+    addCriterion(criterion) {
+        this.criteria.set(criterion.name, criterion);
+    }
+
+    getCriterion(name) {
+        return this.criteria.get(name);
+    }
+
+    getValue(name) {
+        return this.getCriterion(name)?.getValue();
+    }
+
+    setValue(name, value) {
+        this.getCriterion(name)?.setValue(value);
     }
 
     isDefault() {
-        return this.players == undefined
-            && this.minWeight == undefined
-            && this.maxWeight == undefined;
+        return Array.from(this.criteria.values()).every(c => c.isDefault());
     }
 
-    getPlayers() {
-        return this.players;
+    test(boardGame) {
+        return Array.from(this.criteria.values()).every(c => c.test(boardGame));
     }
 
-    setPlayers(value) {
-        this.players = value > 0 ? value : undefined;
+    getActiveCriteria() {
+        return this.getCriteria().filter(c => !c.isDefault());
     }
 
-    getMinWeight() {
-        return this.minWeight;
-    }
-
-    setMinWeight(value) {
-        this.minWeight = value == 1.0 ? undefined : value;
-    }
-
-    getMaxWeight() {
-        return this.maxWeight;
-    }
-
-    setWeightRange(min, max) {
-        this.setMinWeight(min);
-        this.setMaxWeight(max);
-    }
-
-    setMaxWeight(value) {
-        this.maxWeight = value == 5.0 ? undefined : value;
+    getCriteria() {
+        return Array.from(this.criteria.values());
     }
 }
 

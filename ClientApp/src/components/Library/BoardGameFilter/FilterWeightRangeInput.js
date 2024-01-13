@@ -8,8 +8,8 @@ function FilterWeightRangeInput({ filter, handleChange }) {
         max={5.0}
         step={0.1}
         stepOnly
-        minValue={filter.getMinWeight() || 1.0}
-        maxValue={filter.getMaxWeight() || 5.0}
+        minValue={filter.getValue("minWeight") || 1.0}
+        maxValue={filter.getValue("maxWeight") || 5.0}
         onChange={handleChange}
         ruler="false"
         labels={[1, 2, 3, 4, 5]}

@@ -1,16 +1,19 @@
 import { useState } from 'react';
 import { Card, CardBody, Collapse } from 'reactstrap';
-import Filter from './Filter';
+import Filter, { createEmptyFilter } from './Filter';
 import FilterData from './FilterData';
 
 export default FilterCollapse;
-export function FilterCollapse({ filter, setFilter }) {
+export function FilterCollapse({ filter, setFilter, collection, onFilter, getBoardGame }) {
     const [collapsed, setCollapsed] = useState(filter.isDefault());
     const toggle = () => setCollapsed(!collapsed);
-    const clearFilters = () => setFilter(new FilterData());
+    const clearFilters = () => {
+        setCollapsed(true);
+        setFilter(createEmptyFilter());
+    }
 
     return (
-        <div>
+        <div className="bgdb-filter-collapse">
             <p className="d-flex g-0">
                 <button className="btn btn-primary bgdb-btn-filter me-1" onClick={toggle}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-filter bgdb-icon" viewBox="0 0 16 16">
@@ -23,7 +26,12 @@ export function FilterCollapse({ filter, setFilter }) {
             <Collapse isOpen={!collapsed}>
                 <Card className="filter-card mb-3">
                     <CardBody>
-                        <Filter filter={filter} setFilter={setFilter} />
+                        <Filter 
+                            filter={filter} 
+                            setFilter={setFilter} 
+                            collection={collection}
+                            onFilter={onFilter}
+                            getBoardGame={getBoardGame}/>
                     </CardBody>
                 </Card>
             </Collapse>
