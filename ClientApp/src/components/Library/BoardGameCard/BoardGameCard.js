@@ -1,3 +1,5 @@
+import { useContext, useState } from "react";
+import { AppContext } from "../../../AppContext";
 
 function renderRange(a, b) {
     a = a ?? b;
@@ -21,7 +23,26 @@ function renderWeight(weight, decimalPlaces) {
     return <span className={className}>{roundedWeight.toFixed(decimalPlaces)}</span>
 }
 
-export function BoardGameCard({ game }) {
+export function BoardGameCard({ libraryData, isEditing }) {
+    const game = libraryData.boardGame;
+    const [location, setLocation] = useState(libraryData.location || "");
+    const { token } = useContext(AppContext);
+
+    const handleLocationChange = location => {
+        setLocation(location);
+        const editData = {
+            location: (location === undefined || location === "") ? null : location.trim()
+        };
+        fetch(`/api/library/data/edit/${libraryData.id}`, {
+            method: "POST",
+            headers: new Headers({
+                "Authorization": `Bearer ${token?.accessToken}`,
+                "Content-Type": "application/json"
+            }),
+            body: JSON.stringify(editData)
+        });
+    };
+
     return (
         <div className="card mb-3">
             {/* Card body */}
@@ -80,7 +101,15 @@ export function BoardGameCard({ game }) {
                                 <img src="/img/icon/location.png" className="bgdb-icon" alt="" />
                             </div>
                             <div className="col ps-2 my-auto">
-                                <span>A7</span>
+                                {isEditing
+                                    ? <input
+                                        className="form-control"
+                                        value={location}
+                                        placeholder="Location"
+                                        onChange={e => handleLocationChange(e.target.value)}
+                                    />
+                                    : <span>{location}</span>
+                                }
                             </div>
                         </div>
 

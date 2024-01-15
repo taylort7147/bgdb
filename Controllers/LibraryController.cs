@@ -73,12 +73,13 @@ public class LibraryController(BoardGameDbContext _context) : ControllerBase
     }
 
     [Authorize]
-    [HttpPost("library/data/edit/{id}")]
-    public async Task<IActionResult> EditGame(string id,
+    [HttpPost("data/edit/{id}")]
+    public async Task<IActionResult> EditGame(int id,
         [FromBody] LibraryDataEdit editData,
         [FromServices] UserManager<ApplicationUser> userManager)
     {
         var libraryData = await _context.LibraryData
+            .Where(d => d.Id == id)
             .Include(d => d.Library)
             .ThenInclude(l => l.Owner)
             .FirstOrDefaultAsync();

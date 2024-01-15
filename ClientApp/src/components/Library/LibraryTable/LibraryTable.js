@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { redirect, useParams, useSearchParams } from 'react-router-dom';
 import { AppContext } from '../../../AppContext';
 import * as BoardGameFilter from '../BoardGameFilter/BoardGameFilter';
 import { BoardGameCard } from '../BoardGameCard/BoardGameCard';
@@ -30,7 +30,7 @@ function getLibrary(token, libraryId, includeGameProperties) {
 }
 
 export default LibraryTable;
-export function LibraryTable() {
+export function LibraryTable({ isEditing }) {
     var { libraryId } = useParams();
     const { token } = useContext(AppContext);
 
@@ -47,18 +47,23 @@ export function LibraryTable() {
             });
     }, [token, libraryId]);
 
-    // // Permission
-    // const [canEdit, setCanEdit] = useState();
-    // useEffect(() => {
-    //     fetch(`api/library/canedit?id=${libraryId}`, {
-    //         method: 'GET',
-    //         headers: new Headers({
-    //             'Authorization': `Bearer ${token?.accessToken}`
-    //         }),
-    //     })
-    //         .then(response => response.json())
-    //         .then(data => setCanEdit(data));
-    // }, [token, libraryId]);
+    // Permission
+    if (isEditing) {
+        const getCanEdit = async () => {
+            return await fetch(`api/library/canedit?id=${libraryId}`, {
+                method: 'GET',
+                headers: new Headers({
+                    'Authorization': `Bearer ${token?.accessToken}`
+                }),
+            })
+                .then(response => response.json());
+        }
+        const canEdit = getCanEdit();
+        if(!canEdit)
+        {
+            redirect(`/library/${libraryId}`);
+        }
+    }
 
     // Filter
     const [searchParams] = useSearchParams();
@@ -89,7 +94,7 @@ export function LibraryTable() {
         </div>
         {filteredLibrary?.map((data, i) => {
             return <div key={i} className="mb-3">
-                <BoardGameCard game={data.boardGame} />
+                <BoardGameCard libraryData={data} isEditing={isEditing} />
             </div>
         })}
     </>;

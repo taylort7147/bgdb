@@ -48,6 +48,10 @@ const AppRoutes = [
     {
         path: "/library/:libraryId",
         element: <Library.LibraryTable />
+    },
+    {
+        path: "/library/:libraryId/edit",
+        element: <Library.LibraryTable isEditing={true} />
     }
 ];
 
