@@ -80,6 +80,8 @@ public class LibrarySynchronizer(
                 logTime("Single board game", boardGameSyncTimer);
             }
             await UpdateLibraryBoardGames(libraryId, boardGameEntities);
+            await UpdateLastSynchronized(libraryId);
+
             logTime($"All {boardGames.Count} board games", allBoardGamesSyncTimer);
             var averageTime = allBoardGamesSyncTimer.Elapsed / boardGames.Count;
             _logger.LogInformation($"[{nameof(Synchronize)} Timer][Library '{libraryId}'][Average board game sync] {averageTime}.");
@@ -303,6 +305,21 @@ public class LibrarySynchronizer(
                     });
                 }
             }
+            await context.SaveChangesAsync();
+        }
+    }
+
+    private async Task UpdateLastSynchronized(string libraryId)
+    {
+        _logger.LogInformation($"Updating 'LastSynchronized' field for library '{libraryId}'.");
+        using (var scope = _scopeFactory.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<BoardGameDbContext>();
+            var library = await context.Libraries
+                .Where(l => l.Id == libraryId)
+                .SingleAsync();
+
+            library.LastSynchronized = DateTime.UtcNow;
             await context.SaveChangesAsync();
         }
     }

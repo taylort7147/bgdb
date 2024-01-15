@@ -72,6 +72,8 @@ export function LibraryTable() {
     if (library == null) {
         return null;
     }
+
+    const lastSynchronized = library.lastSynchronized ? new Date(library.lastSynchronized).toLocaleString() : "never";
     const libraryData = library.libraryData;
     return <>
         <BoardGameFilter.FilterCollapse
@@ -82,7 +84,7 @@ export function LibraryTable() {
             getBoardGame={getBoardGame} />
         <div className="bgdb-library-summary">
             <h5>{`${libraryId}'s library`}</h5>
-            <div>{`Last synchronized: ${library.lastSynchronized ?? "never"}`}</div>
+            <div>{`Last synchronized: ${lastSynchronized}`}</div>
             <div>{`Showing ${filteredLibrary?.length} of ${libraryData.length} game${libraryData.length != 1 && "s"}`}</div>
         </div>
         {filteredLibrary?.map((data, i) => {

@@ -35,6 +35,10 @@ public class LibraryController(BoardGameDbContext _context) : ControllerBase
             return NotFound($"Library '{id}' was not found");
         }
         var dto = new LibraryDto();
+        dto.Id = library.Id;
+        dto.LastSynchronized = library.LastSynchronized;
+        dto.IsEnabled = library.IsEnabled;
+        dto.OwnerId = library.Owner.Id;
         dto.LibraryData = library.LibraryData.Select(d => new BoardGameLibraryDataDto
         {
             Id = d.Id,
@@ -114,7 +118,9 @@ public class LibraryController(BoardGameDbContext _context) : ControllerBase
         bool includeGames = false, 
         bool includeGameProperties = false)
     {
-        var library = _context.Libraries.Where(l => l.Id.ToLower() == id.ToLower());
+        var library = _context.Libraries
+            .Include(l => l.Owner)
+            .Where(l => l.Id.ToLower() == id.ToLower());
         if (includeGames)
         {
             if (includeGameProperties)
