@@ -1,45 +1,35 @@
 export class FilterCriterion {
-    constructor({ name, value, mapValue, test, describe }) {
+    constructor({ name, value, test, description }) {
         this.name = name;
         this._value = value;
-        this._mapValue = mapValue ? mapValue : v => v;
         this._test = test;
-        this._describe = describe;
+        this._description = description;
     }
 
     clone() {
         var criterion = new FilterCriterion({
             name: this.name, // TODO: make this private and add accessor
             value: this._value,
-            mapValue: this._mapValue.bind({}),
             test: this._test.bind({}),
-            describe: this._describe.bind({})
+            description: this._description
         });
         return criterion;
     }
 
+    getValue(){
+        return this._value;
+    }
+
     test(boardGame) {
-        if (this._value == undefined) {
+        if (this._value === undefined) {
             return true;
         }
         const result = this._test(boardGame, this._value);
         return result;
     }
 
-    setValue(value) {
-        this._value = this._mapValue(value);
-    }
-
-    getValue() {
-        return this._value;
-    }
-
-    describe() {
-        return this._describe(this._value);
-    }
-
-    isDefault() {
-        return this._value == undefined;
+    getDescription() {
+        return this._description;
     }
 }
 export default FilterCriterion;

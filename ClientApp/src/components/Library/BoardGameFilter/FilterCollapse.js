@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Card, CardBody, Collapse } from 'reactstrap';
-import Filter, { createEmptyFilter } from './Filter';
+import Filter from './Filter';
 import FilterData from './FilterData';
 
 export default FilterCollapse;
@@ -9,7 +9,7 @@ export function FilterCollapse({ filter, setFilter, collection, onFilter, getBoa
     const toggle = () => setCollapsed(!collapsed);
     const clearFilters = () => {
         setCollapsed(true);
-        setFilter(createEmptyFilter());
+        setFilter(new FilterData());
     }
 
     return (

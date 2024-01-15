@@ -17,6 +17,10 @@ body {
     background: tint-color($primary, 85%);
 }
 
+.bgdb-applied-filter {
+    white-space: nowrap;
+}
+
 .bgdb-btn-filter {
     margin-left: auto;
     margin-right: 0;

@@ -19,6 +19,10 @@ export class FilterData {
         this.criteria.set(criterion.name, criterion);
     }
 
+    removeCriterion(name){
+        this.criteria.delete(name);
+    }
+
     getCriterion(name) {
         return this.criteria.get(name);
     }
@@ -27,20 +31,12 @@ export class FilterData {
         return this.getCriterion(name)?.getValue();
     }
 
-    setValue(name, value) {
-        this.getCriterion(name)?.setValue(value);
-    }
-
     isDefault() {
-        return Array.from(this.criteria.values()).every(c => c.isDefault());
+        return this.criteria.size === 0;
     }
 
     test(boardGame) {
         return Array.from(this.criteria.values()).every(c => c.test(boardGame));
-    }
-
-    getActiveCriteria() {
-        return this.getCriteria().filter(c => !c.isDefault());
     }
 
     getCriteria() {

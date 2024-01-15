@@ -5,11 +5,22 @@ import * as BoardGameFilter from '../BoardGameFilter/BoardGameFilter';
 import { BoardGameCard } from '../BoardGameCard/BoardGameCard';
 import { createFilter } from '../BoardGameFilter/Filter';
 
-function getBoardGame(item){
+function getBoardGame(item) {
     return item.boardGame;
 }
+function getSortKey(data) {
+    return data.boardGame.name;
+}
 
-function getLibrary(token, libraryId, includeGameProperties){
+function compareMethod(a, b) {
+    const keyA = getSortKey(a);
+    const keyB = getSortKey(b);
+    if (keyA < keyB) return -1;
+    if (keyA > keyB) return 1;
+    return 0;
+};
+
+function getLibrary(token, libraryId, includeGameProperties) {
     return fetch(`api/library/${libraryId}?includeGames=true&includeGameProperties=${includeGameProperties}`, {
         method: 'GET',
         headers: new Headers({
@@ -54,22 +65,13 @@ export function LibraryTable() {
     const [filter, setFilter] = useState(createFilter(searchParams));
     const [filteredLibrary, setFilteredLibrary] = useState(library);
 
-    const getSortKey = data => data.boardGame.name;
-    const compareMethod = useCallback((a, b) => {
-        const keyA = getSortKey(a);
-        const keyB = getSortKey(b);
-        if (keyA < keyB) return -1;
-        if (keyA > keyB) return 1;
-        return 0;
-    }, []);
+    const handleFilter = useCallback(filteredLibrary => {
+        setFilteredLibrary(filteredLibrary.sort(compareMethod));
+    }, [setFilteredLibrary]);
 
     if (library == null) {
         return null;
     }
-
-    const handleFilter = filteredLibrary => {
-        setFilteredLibrary(filteredLibrary.sort(compareMethod));
-    };
 
     return <>
         <BoardGameFilter.FilterCollapse
@@ -77,7 +79,7 @@ export function LibraryTable() {
             setFilter={setFilter}
             collection={library.libraryData}
             onFilter={handleFilter}
-            getBoardGame={getBoardGame} /> 
+            getBoardGame={getBoardGame} />
         {filteredLibrary?.map((data, i) => {
             return <div key={i} className="mb-3">
                 <BoardGameCard game={data.boardGame} />
