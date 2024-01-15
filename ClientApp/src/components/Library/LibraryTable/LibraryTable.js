@@ -72,7 +72,7 @@ export function LibraryTable() {
     if (library == null) {
         return null;
     }
-
+    const libraryData = library.libraryData;
     return <>
         <BoardGameFilter.FilterCollapse
             filter={filter}
@@ -80,6 +80,11 @@ export function LibraryTable() {
             collection={library.libraryData}
             onFilter={handleFilter}
             getBoardGame={getBoardGame} />
+        <div className="bgdb-library-summary">
+            <h5>{`${libraryId}'s library`}</h5>
+            <div>{`Last synchronized: ${library.lastSynchronized ?? "never"}`}</div>
+            <div>{`Showing ${filteredLibrary?.length} of ${libraryData.length} game${libraryData.length != 1 && "s"}`}</div>
+        </div>
         {filteredLibrary?.map((data, i) => {
             return <div key={i} className="mb-3">
                 <BoardGameCard game={data.boardGame} />
