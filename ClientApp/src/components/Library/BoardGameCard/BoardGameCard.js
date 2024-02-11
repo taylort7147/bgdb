@@ -48,7 +48,7 @@ export function BoardGameCard({ libraryData, isEditing }) {
             {/* Card body */}
             <div className="card-body">
                 <h3 className="card-title">{game.name}</h3>
-                <p className="card-text"><small className="text-body-secondary">Some other text</small></p>
+                <p className="card-text d-none"><small className="text-body-secondary">Some other text</small></p>
             </div>
 
             {/* Game info */}
